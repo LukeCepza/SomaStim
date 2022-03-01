@@ -78,19 +78,19 @@ void loop() {
 
 void SerialEventWrite(byte rec){
   tcaselect(motor); // select latest motor
-  if(rec==0x05) {           // label/code 33024
+  if(rec==0x09) {           // label/code 33032
     HMD.RTP(rtpn[lvl]);
     delay(3000);
   }
-  if(rec==0x06) {           // label/code 33025
+  if(rec==0x0A) {           // label/code 33033
     HMD.RTP(rtpn[lvl+1]);
     delay(3000);
   }
-  if(rec==0x07) {           // label/code 33026
+  if(rec==0x0B) {           // label/code 33034
     HMD.RTP(rtpn[lvl+2]);
     delay(3000);
   }  
-  if(rec==0x08){            // label/code 33027
+  if(rec==0x0C){            // label/code 33035
     HMD.RTP(rtpn[lvl+3]);
     delay(3000);
   }  
