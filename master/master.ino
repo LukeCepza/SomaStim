@@ -182,6 +182,35 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("Vibra  L4  33035");
     }
+  else if(Fmar.indexOf("33036")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0D;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("Caricia TENSE 2N");
+     }
+  else if(Fmar.indexOf("33037")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0E;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("Caricia TENSE 3N");
+     }
+  else if(Fmar.indexOf("33038")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0F;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("Caricia TENSE 4N");
+  }
+  else if(Fmar.indexOf("33039")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x10;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("Caricia TENSE 6N");
+     }
+
   if (ret!=0){
     digitalWrite(7,HIGH);
   }

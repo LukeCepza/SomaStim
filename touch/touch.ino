@@ -7,23 +7,12 @@ RF24 radio(9, 10); // using pin 9 for the CE pin, and pin 10 for the CSN pin
 
 // Let these addresses be used for the pair
 uint8_t address[][6] = { "M2T", "M2A", "M2V" };
-
-int c, newtons;
+int ang_01,ang_02, ten,dA;
+int c, newtons, angle;
 byte payload = 0x00;
 
-//PID controller constants
-double kp = -0.5;
-double ki = -0.000010;
-double kd = -0.0004;
-//PID controller with library
-#include <PIDController.hpp>
-PID::PIDParameters<double> parameters(kp,ki,kd); // (kp,ki,kd)
-PID::PIDController<double> pidController(parameters);
-
-
-unsigned long currentTime, previousTime;
+unsigned long currentTime, previousTime, eltime;
 double elapsedTime;
-double error, lastError, cumError, rateError;
 double input, output;
 double TimeZero, currtime;
 double Yt, Ut, setPoint;
@@ -40,6 +29,9 @@ double elTime;                //compute time elapsed from previous computation
 #define SERVO_02 0x02               // ID of which we will set Dynamixel too
 #define SERVO_ControlPin 0x02       // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
 #define SERVO_SET_Baudrate 500000    // Baud rate speed which the Dynamixel will be set too (57600)
+#define CW_LIMIT_ANGLE 0x000        // lowest clockwise angle is 1, as when set to 0 it set servo to wheel mode
+#define CCW_LIMIT_ANGLE 0x3FF       // Highest anit-clockwise angle is 0XFFF, as when set to 0 it set servo to wheel mode
+
 //--------------Strain Gauge--------------// 
 //https://github.com/sparkfun/HX711-Load-Cell-Amplifier
 //https://github.com/bogde/HX711
@@ -58,9 +50,6 @@ unsigned long t = 0;
 
 //****************************SET UP******************************//
 void setup() {
-    //---------------PID LIBRARY----------------//
-    pidController.TurnOn();
-    
     //------------------Radio ------------------//
       // initialize the transceiver on the SPI bus
     Serial.begin(500000);
@@ -84,12 +73,10 @@ void setup() {
     Serial.println("ResetTimer");                                         // column headers
     Serial.println("DATA, TIME, TIMER");
     Dynamixel.setDirectionPin(SERVO_ControlPin);  Serial.print(",");      // Optional. Set direction control pin
-    Dynamixel.setMode(SERVO_01, WHEEL, 0, 0);     Serial.print(",");      // set mode to WHEEL
-    Dynamixel.setMode(SERVO_02, WHEEL, 0, 0);                             // set mode to WHEEL
-
-    TimeZero = millis();
-    currtime = millis();
-
+    Dynamixel.setMode(SERVO_02, SERVO, CW_LIMIT_ANGLE, CCW_LIMIT_ANGLE); Serial.print(",");   // set mode to SERVO and set angle limits
+    Dynamixel.setMode(SERVO_01, SERVO, CW_LIMIT_ANGLE, CCW_LIMIT_ANGLE);    // set mode to SERVO and set angle limits
+    Dynamixel.servo(SERVO_01, 0x0, 0x0A0);
+    Dynamixel.servo(SERVO_02, 0x0, 0x0A0);
     //--------------Strain Gauge--------------// 
     LoadCell.begin();
     LoadCell.start(stabilizingtime, _tare);
@@ -106,16 +93,58 @@ void setup() {
 
 //**************************** LOOP *********************************//
 void loop() {
-    uint8_t pipe;
-    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
-        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
-        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
-
-        SerialEventWrite(payload);
-    }
+//    uint8_t pipe;
+//    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
+//        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
+//        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
+//
+//        SerialEventWrite(payload);
+//    }
+SerialEventWrite(0x0D);
+delay(1000);
+SerialEventWrite(0x10);
+delay(5000);
 } //**************************** END LOOP ***************************//
+void stim(int da){
+    //newtons = 203.94;
+    eltime = 0;
+    previousTime = millis();
+    int ang = 0;
+    int m = 5;
+    while((eltime < 7000) && ((dA+ang) < 0x3FF)){
+      ang = ang+m;
+      eltime = millis() - previousTime ;
+      Yt = ReadStrainGauge();
+      Dynamixel.servo(SERVO_01, dA+ang, 0x060);
+      Dynamixel.servo(SERVO_02, ang, 0x060);
+      Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" ten = "+ String(ten)+ " da = "+String(dA) +" A02 = " +String(ang_02));
+    }     
+  
+  }
+
+//programación completa del prototipo
+void SerialEventWrite(byte rec) {
+    if( rec == 0x0D){
+        zerotare();
+        ten = 0x100;
+        dA = tense(408.94,ten);
+        }
+    if (rec == 0x10) {            // si rec tiene código para iniciar: START
+        stim(dA);
+        distend();
+    }
+    
+}
 
 
+void zerotare(){
+    LoadCell.start(stabilizingtime, _tare);               // zero tare
+    unsigned long relativeTime = millis();                //Tiempo en el que comenzo el movimiento
+}
+
+// función zero tare y tensar
+void Prepare(int newtons) {
+}
 //******************** FUNCIONES ***************************
 // determinar los newtons en base a lectura de entrada proveniente del master
 int levels(byte ret) {
@@ -137,109 +166,6 @@ int levels(byte ret) {
         break;
     }
 }
-
-//programación completa del prototipo
-void SerialEventWrite(byte rec) {
-    if (rec == 0x10) {            // si rec tiene código para iniciar: START
-        delayP(5000);
-        //delay(25000);           // espera 25s
-        delayP(5000);
-        //delay(20000);           // espera 20s para colocar el brazo (Aqui notifica master a usuario)
-        c = 0;
-        distend(1000);
-        newtons = levels(rec);  // levels toma etiqueta para obtener nivel de fuerza
-        Prepare(newtons);
-    }
-
-    if (rec == 0x01 || rec == 0x02 || rec == 0x03) {
-        newtons = levels(rec);    // levels toma etiqueta para obtener nivel de fuerza
-        GETERP(newtons); //*********************************
-        c++;
-        distend(1000);
-        delay(5000);
-        delay(10000);           //Mover prototipo a otro lugar del brazo para siguiente estimulación
-
-        if (c < 3) {
-            Prepare(newtons); //******************************
-        }
-        else if (c >= 3 && rec != 0x04) {
-            c = 0;
-            //delay(85000);    // Descanso
-            delay(10000);
-            //delay(20000);    // espera 20s para colocar el brazo (Aqui notifica master a usuario)
-            delay(5000);
-            newtons = levels(rec + 0x01);     // levels toma etiqueta para obtener nivel de fuerza
-            Prepare(newtons); //******************************
-        }
-        else {
-            while (true) {
-                Serial.println("ENDPROGRAM");
-            }
-        }
-    }
-}
-
-void delayP(int msec) {
-  unsigned long relativeTime = millis();                //Tiempo en el que comenzo el movimiento
-  unsigned long currtime = millis();
-  elTime = (double)(currtime - relativeTime);           //Tiempo que ha pasado desde que comenzo el movimiento
-  while (msec > elTime) {
-    Yt = ReadStrainGauge();
-    Serial.print("DATA, TIME, TIMER,");
-    Serial.print("N,N");
-    Serial.println(", " + String(Yt) + ", " + String("N") + ", " + String(elTime / 10) + ", " + String(currtime / 10) + ", " + String(relativeTime / 10) + ", Reading");
-    delay(10);
-  }
-}
-
-// función zero tare y tensar
-void Prepare(int newtons) {
-    LoadCell.start(stabilizingtime, _tare);               // zero tare
-    unsigned long relativeTime = millis();                //Tiempo en el que comenzo el movimiento
-                                                            //TENSAR NIVEL CN - dura 9s
-    while (elTime <= 9000) {
-        currtime = millis();                                //Tiempo real
-        elTime = (double)(currtime - relativeTime);         //Tiempo que ha pasado desde que comenzo el movimiento
-        Yt = ReadStrainGauge();
-        Ut = computePID1(Yt, newtons);
-        //Ut = computePID2(Yt,newtons, elTime);               
-        //if(Ut > 300){Ut = 300;}; if(Ut < 0){ Ut = 0;}       //#########################REVISAR
-        Serial.println(", " + String(Yt) + ", " + String(Ut) + ", " + String(elTime / 10) + ", " + String(currtime / 10) + ", " + String(relativeTime / 10) + ", Preparing");
-        Serial.print("DATA, TIME, TIMER");
-        Tense(Ut);
-        //*** motores siguen con movimiento de tensado
-    }
-    //Stop servo-motors
-    Dynamixel.wheel(SERVO_01, LEFT, 0);   delay(10);
-    Dynamixel.wheel(SERVO_02, RIGHT, 0);
-}
-
-// función zero tare y tensar
-void GETERP(int newtons) {
-    LoadCell.start(stabilizingtime, _tare);               // zero tare
-    unsigned long relativeTime = millis();                //Tiempo en el que comenzo el movimiento
-    
-    //TENSAR NIVEL CN - dura 6
-    while (elTime <= 6000) {
-        currtime = millis();                                //Tiempo real
-        elTime = (double)(currtime - relativeTime);         //Tiempo que ha pasado desde que comenzo el movimiento
-        Yt = ReadStrainGauge();
-        Ut = computePID1(Yt, newtons);
-        //Ut = computePID(Yt, newtons, elTime);               
-        //if (Ut > 300) { Ut = 300; }; if (Ut < 0) { Ut = 0; } //#########################REVISAR
-        Serial.println(", " + String(Yt) + ", " + String(Ut) + ", " + String(elTime / 10) + ", " + String(currtime / 10) + ", " + String(relativeTime / 10) + ", Stimulus");
-        Serial.print("DATA, TIME, TIMER,");
-        if (elTime <= 3000) {
-            Dynamixel.wheel(SERVO_01, RIGHT, 300 - Ut);    Serial.print(",");   delay(10);
-            Dynamixel.wheel(SERVO_02, RIGHT, 300 + Ut);    
-        }
-        if (elTime > 3000 & elTime < 6000) {
-            Dynamixel.wheel(SERVO_01, LEFT, 300 + Ut);     Serial.print(",");   delay(10);
-            Dynamixel.wheel(SERVO_02, LEFT, 300 - Ut);     
-        }
-    }
-}
-
 //lectura del peso del brazo/pierna
 double ReadStrainGauge() {
     while (!newDataReady) {
@@ -255,56 +181,34 @@ double ReadStrainGauge() {
     }
 }
 
+
 //Aumentar la tension de forma estatica.
-void Tense(double Ut) {
-    if (Ut > 0) {
-        Dynamixel.wheel(SERVO_01, LEFT, Ut);      Serial.print(",");    delay(10);
-        Dynamixel.wheel(SERVO_02, RIGHT, Ut);
-    }
-    if (Ut < 0) {
-        Dynamixel.wheel(SERVO_01, RIGHT, -Ut);    Serial.print(",");    delay(10);
-        Dynamixel.wheel(SERVO_02, LEFT, -Ut);
-    }
+int tense(double newtons, int ten) {
+        //newtons = 203.94;
+        eltime = 0;
+        previousTime = millis();
+        while(eltime < 7000){
+
+        int m = 5;
+        eltime = millis() - previousTime ;
+        Yt = ReadStrainGauge();       
+        //F range 190-210 M
+        if (Yt < newtons + .05*newtons){
+          ten=ten+m;
+          }
+        if (Yt > newtons - .05*newtons){
+          ten=ten-m;
+          }
+        dA = ang_01+ten;
+        Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" ten = "+ String(ten)+ " da = "+String(dA) +" A02 = " +String(ang_02));
+        delay(5);
+        Dynamixel.servo(SERVO_01, dA, 0x060);
+        //Dynamixel.servo(SERVO_02, ang_02, 0x060);
+}
+return dA;
 }
 
-void distend(int lenght) {
-    Dynamixel.wheel(SERVO_01, RIGHT, 200);
-    Dynamixel.wheel(SERVO_02, LEFT, 200);
-    delay(lenght);
-    Dynamixel.wheel(SERVO_01, LEFT, 0);
-    Dynamixel.wheel(SERVO_02, RIGHT, 0);
-    delay(10);
-
-    Serial.println(", "+String(Yt)+", "+String(Ut)+", "+String(elTime/10)+", "+String(currtime/10) + ", Distend"); 
-    Serial.print("DATA, TIME, TIMER,");
-}
-
-//cálculo de PID con librería
-double computePID1(double inp, int newt) {
-    pidController.Setpoint = newt * 101.9716213;
-
-    pidController.Input = inp;
-    pidController.Update();
-
-    output = pidController.Output;
-    return output;
-}
-
-//Cálculo de PID
-double computePID2(double inp, int newt, double elTime) {
-    setPoint = newt * 101.9716213;
-    currentTime = elTime;                                     //get current time
-    elapsedTime = (double)(currentTime - previousTime);       //compute time elapsed from previous computation
-
-    error = setPoint - inp;                                   // determine error
-    cumError += error * elapsedTime;                          // compute integral
-    rateError = (error - lastError) / elapsedTime;              // compute derivative
-
-    double output = kp * error + ki * cumError + kd * rateError;   //PID output               
-
-    lastError = error;                                        //remember current error
-    previousTime = currentTime;                               //remember current time
-
-    return output;                                            //have function return the PID output
-}
-//******* END LOOP ****************************
+void distend(){
+        Dynamixel.servo(SERVO_01, 0x000, 0x100);
+        Dynamixel.servo(SERVO_02, 0x000, 0x100);
+  }
