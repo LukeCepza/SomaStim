@@ -7,7 +7,7 @@ RF24 radio(9, 10); // using pin 9 for the CE pin, and pin 10 for the CSN pin
 
 // Let these addresses be used for the pair
 uint8_t address[][6] = { "M2T", "M2A", "M2V" };
-int ang_01,ang_02, ten,dA;
+int ang_01, ang_02, ang_01_Io,ang_02_Io, ten,dA;
 int c, newtons, angle;
 byte payload = 0x00;
 
@@ -75,8 +75,6 @@ void setup() {
     Dynamixel.setDirectionPin(SERVO_ControlPin);  Serial.print(",");      // Optional. Set direction control pin
     Dynamixel.setMode(SERVO_02, SERVO, CW_LIMIT_ANGLE, CCW_LIMIT_ANGLE); Serial.print(",");   // set mode to SERVO and set angle limits
     Dynamixel.setMode(SERVO_01, SERVO, CW_LIMIT_ANGLE, CCW_LIMIT_ANGLE);    // set mode to SERVO and set angle limits
-    Dynamixel.servo(SERVO_01, 0x0, 0x0A0);
-    Dynamixel.servo(SERVO_02, 0x0, 0x0A0);
     //--------------Strain Gauge--------------// 
     LoadCell.begin();
     LoadCell.start(stabilizingtime, _tare);
@@ -89,6 +87,7 @@ void setup() {
       LoadCell.setCalFactor(-461);      // user set calibration value (float), initial value 1.0 may be used for this sketch
       //Serial.println("Startup is complete");
     }
+    distend();
 }//**************************END SETUP*******************************//
 
 //**************************** LOOP *********************************//
@@ -100,73 +99,164 @@ void loop() {
 //
 //        SerialEventWrite(payload);
 //    }
-SerialEventWrite(0x0D);
-delay(1000);
 SerialEventWrite(0x10);
-delay(5000);
+distend();
+
 } //**************************** END LOOP ***************************//
-void stim(int da){
+
+//Aumentar la tension de forma estatica.
+int tense(double newtons, double ten) {
+    ang_02_Io = 1023;
+    ang_01_Io = 0;
+    Dynamixel.servo(SERVO_01, ang_01_Io, 0x060);
+    Dynamixel.servo(SERVO_02, ang_02_Io, 0x060);
+    delay(1000);
+    ten = 0;
+    int m = 20; //Proporcion tensante, es la velocidad a la que se tensa.
+    Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" m = "+ String(m)+ " da = "+String(dA) +" A02 = " +String(ang_02_Io));
+    eltime = 0; previousTime = millis();
+    while(eltime < 14000){
+        eltime = millis() - previousTime; Yt = ReadStrainGauge();
+        
+        if (Yt < newtons - .02*newtons){
+            ten=ten+m;
+        }
+        else if (Yt > newtons + .02*newtons){
+            ten=ten-m;
+            m = 1;//newtons/200; 
+        }
+        if (ten > 1024&& ten <= 1536){  //THIRD ANGLE
+            ang_01 = 1023;
+            ang_02 = ang_02_Io - ten +1023;
+        }
+        else if (ten > 512 && ten <= 1024){  //SECOND ANGLE
+            ang_02 = 1023;
+            ang_01 = ang_01_Io + ten;
+        }
+        else if (ten > 0 && ten <= 512){         //FIRST ANGLE
+            ang_02 = 1023;
+            ang_01 = ang_01_Io + ten;
+        }
+        Dynamixel.servo(SERVO_01, ang_01, 0x060);
+        Dynamixel.servo(SERVO_02, ang_02, 0x060); Serial.println();
+        // Tolerance error 2%
+        dA = ten;
+        delay(m*5); //Cuando se esta tensando por primera vez, la duración entre cado paso de tensado es mayor que cuando ya se ha
+        //sobrepasado el nivel de interes.
+        Serial.print("t = "+ String(eltime)+" YT = "+String(Yt)+" m = "+ String(m)+ " ten = "+String(ten) +" A02 = " +String(ang_02_Io));
+}
+return dA;
+}
+
+int tense_legacy(double newtons, double ten) {
+        int m = 10; //Proporcion tensante, es la velocidad a la que se tensa.
+        Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" m = "+ String(m)+ " da = "+String(dA) +" A02 = " +String(ang_02_Io));
+        Dynamixel.servo(SERVO_01, ten, 0x0F0);
+        Dynamixel.servo(SERVO_01, ten, 0x0F0);
+        delay(1000);
+        eltime = 0;
+        previousTime = millis();
+        while(eltime < 7000){
+
+        eltime = millis() - previousTime ;
+        Yt = ReadStrainGauge();
+        double E = (newtons-Yt)/newtons;
+
+        // Tolerance error 2%
+        if (Yt < newtons - .02*newtons){
+          ten=ten+m;
+          }
+        if (Yt > newtons + .02*newtons){
+          ten=ten-m;
+          m = newtons/200; 
+          }
+        dA = ten;
+        delay(m*7); //Cuando se esta tensando por primera vez, la duración entre cado paso de tensado es mayor que cuando ya se ha
+        //sobrepasado el nivel de interes.
+        Serial.print("t = "+ String(eltime)+" YT = "+String(Yt)+" m = "+ String(m)+ " ten = "+String(ten) +" A02 = " +String(ang_02_Io));
+        Dynamixel.servo(SERVO_01, dA, 0x050); Serial.println("");
+        //Dynamixel.servo(SERVO_02, ang_02, 0x060);
+}
+return dA;
+}
+
+void stim_legacy(int da, int newtons){
     //newtons = 203.94;
     eltime = 0;
     previousTime = millis();
+    int lag = 0;
     int ang = 0;
-    int m = 5;
+    int mov = 3;
+    int m = newtons/200;;
     while((eltime < 7000) && ((dA+ang) < 0x3FF)){
-      ang = ang+m;
+      ang = ang+mov;
+      if (Yt < newtons - .02*newtons){
+      lag=lag+m;
+      }
+      if (Yt > newtons + .02*newtons){
+      lag=lag-m;
+      }
       eltime = millis() - previousTime ;
       Yt = ReadStrainGauge();
-      Dynamixel.servo(SERVO_01, dA+ang, 0x060);
-      Dynamixel.servo(SERVO_02, ang, 0x060);
-      Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" ten = "+ String(ten)+ " da = "+String(dA) +" A02 = " +String(ang_02));
+      Serial.print("t = "+ String(eltime)+" YT = "+String(Yt)+" ten = "+ String(ten)+ " da = "+String(dA) +" A02 = " +String(ang_02_Io));
+      Dynamixel.servo(SERVO_01, dA+ang, 0x050);
+      Dynamixel.servo(SERVO_02, ang-lag, 0x050);Serial.println("");
+      delay(50);
     }     
   
   }
-
 //programación completa del prototipo
 void SerialEventWrite(byte rec) {
+    //200 gramos
     if( rec == 0x0D){
         zerotare();
-        ten = 0x100;
-        dA = tense(408.94,ten);
+
+        ten = 0;
+        c = 0;
+        if (c == 0)     {dA = tense(200,ten);}
+        else if (c == 1){dA = tense_mid(200,ten);}
         }
-    if (rec == 0x10) {            // si rec tiene código para iniciar: START
-        stim(dA);
+    else if (rec == 0x01){   
+        stim(dA, 200);
         distend();
     }
-    
+    //300 gramos
+    else if( rec == 0x0E){
+        zerotare();
+        ten = 0x200;
+        dA = tense(300,ten);
+        }
+    else if (rec == 0x02){     
+        stim(dA, 300);
+        distend();
+    }
+    // 400 gramos
+    else if( rec == 0x0F){
+        zerotare();
+        ten = 0x250;
+        dA = tense(400,ten);
+        }
+    else if (rec == 0x03){            
+        stim(dA, 400);
+        distend();
+    }
+    // 600 gramos
+    else if( rec == 0x10){
+        zerotare();
+        ten = 0x300;
+        dA = tense(600,ten);
+        }
+    else if (rec == 0x04){           
+        stim(dA, 600);
+        distend();
+    }
 }
-
-
+// Quitar el peso del brazo
 void zerotare(){
     LoadCell.start(stabilizingtime, _tare);               // zero tare
     unsigned long relativeTime = millis();                //Tiempo en el que comenzo el movimiento
 }
-
-// función zero tare y tensar
-void Prepare(int newtons) {
-}
-//******************** FUNCIONES ***************************
-// determinar los newtons en base a lectura de entrada proveniente del master
-int levels(byte ret) {
-    switch (ret) {
-    case 0x10:
-        return 2;
-        break;
-    case 0x01:
-        return 2;
-        break;
-    case 0x02:
-        return 3;
-        break;
-    case 0x03:
-        return 4;
-        break;
-    case 0x04:
-        return 6;
-        break;
-    }
-}
-//lectura del peso del brazo/pierna
+// lectura del peso del brazo/pierna
 double ReadStrainGauge() {
     while (!newDataReady) {
         if (LoadCell.update()) newDataReady = true;
@@ -180,35 +270,10 @@ double ReadStrainGauge() {
         }
     }
 }
-
-
-//Aumentar la tension de forma estatica.
-int tense(double newtons, int ten) {
-        //newtons = 203.94;
-        eltime = 0;
-        previousTime = millis();
-        while(eltime < 7000){
-
-        int m = 5;
-        eltime = millis() - previousTime ;
-        Yt = ReadStrainGauge();       
-        //F range 190-210 M
-        if (Yt < newtons + .05*newtons){
-          ten=ten+m;
-          }
-        if (Yt > newtons - .05*newtons){
-          ten=ten-m;
-          }
-        dA = ang_01+ten;
-        Serial.println("t = "+ String(eltime)+" YT = "+String(Yt)+" ten = "+ String(ten)+ " da = "+String(dA) +" A02 = " +String(ang_02));
-        delay(5);
-        Dynamixel.servo(SERVO_01, dA, 0x060);
-        //Dynamixel.servo(SERVO_02, ang_02, 0x060);
-}
-return dA;
-}
-
 void distend(){
-        Dynamixel.servo(SERVO_01, 0x000, 0x100);
-        Dynamixel.servo(SERVO_02, 0x000, 0x100);
-  }
+  ang_02_Io = 1023;
+  ang_01_Io = 0;
+  Dynamixel.servo(SERVO_01, ang_01_Io, 0x300);
+  Dynamixel.servo(SERVO_02, ang_02_Io, 0x30);
+  delay(5000);
+}

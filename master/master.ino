@@ -207,7 +207,7 @@ byte SerialEvent(){
     radio.openWritingPipe(address[0]);
     ret = 0x10;
     lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);  
     lcd.print("Caricia TENSE 6N");
      }
 
