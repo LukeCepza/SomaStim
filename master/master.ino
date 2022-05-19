@@ -13,7 +13,6 @@ RF24 radio(9, 10); // using pin 9 for the CE pin, and pin 10 for the CSN pin
 // Let these addresses be used for the pair
 
 uint8_t address[][6] = {"M2T", "M2A", "M2V"};
-//bool radioNumber = 2;
 byte payload;  
 
 void setup() {
@@ -45,8 +44,6 @@ void setup() {
   // number of bytes we need to transmit a float
   radio.setPayloadSize(sizeof(payload)); // float datatype occupies 4 bytes
   // set the TX address of the RX node into the TX pipe
-  //
-  //radio.stopListening();
 }
 
 
@@ -70,13 +67,13 @@ void loop() {
       delay(500);
       lcd.setRGB(0, 250, 0);
       lcd.setCursor(0, 1);
-      lcd.print("Succesful       ");
+      lcd.print("   Successful   ");
 
     }else {
       Serial.println(F("Transmission failed or timed out")); // payload was not delivered
       lcd.setRGB(250, 0, 0);
       lcd.setCursor(0, 1);
-      lcd.print("Failed          ");
+      lcd.print("     Failed     ");
     }
   }
 }
@@ -88,14 +85,6 @@ byte SerialEvent(){
   while(Serial.available()){
     char markers = Serial.read();
     Fmar += markers;  
-    }
-  if(Fmar.indexOf("10001")>=0) {
-    //agregar el valor del canal
-    radio.openWritingPipe(address[0]);      
-    ret = 0x10;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("Caricia - INICIO");
     }
   if(Fmar.indexOf("33024")>=0) {
     //agregar el valor del canal
@@ -210,9 +199,19 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);  
     lcd.print("Caricia TENSE 6N");
      }
-
-  if (ret!=0){
-    digitalWrite(7,HIGH);
-  }
+  else if(Fmar.indexOf("33041")>=0) {
+    radio.openWritingPipe(address[1]);
+    ret = 0x11;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("START THRESHOLD ");
+    }
+  else if(Fmar.indexOf("33042")>=0) {
+    radio.openWritingPipe(address[1]);
+    ret = 0x12;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("      STOP      ");
+    }
   return ret;
 }
