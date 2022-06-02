@@ -71,7 +71,7 @@ void loop() {
 void SerialEventWrite(byte rec){
   // checks if label is the one for marking the threshold (0xF0 - es solo un ejemplo) o is no
   // the label of STOP (0xFF -ejemplo)
-  if(rec==0x11){
+  if(rec==0x14){
     ths = true;
       //funciÃ³n abajo
     Serial.println("Thrs Ready");
@@ -79,7 +79,7 @@ void SerialEventWrite(byte rec){
 
   if (ths == true){
   //if ths is true, then the STOP label received will affect the threshold action
-    if (rec == 0x12){
+    if (rec == 0x15){
       analogWrite(fan,0);
       numths++;
       Serial.println("Thr FINAL");
@@ -124,7 +124,7 @@ void SerialEventWrite(byte rec){
       Serial.println("Intensidad: ");
       Serial.println(tshold + 3*pz);
      }
-    if (rec == 0x13){     // STOP STIMULI LABEL
+    if (rec == 0x16){     // STOP STIMULI LABEL
       analogWrite (fan,0);
      }
   }
