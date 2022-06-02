@@ -140,7 +140,7 @@ int tense(double newtons, double ten)
     Serial.println("t = " + String(eltime) + " YT = " + String(Yt) + " m = " + String(m) + " da = " + String(dA) + " A02 = " + String(ang_02_Io));
     eltime = 0;
     previousTime = millis();
-    while (eltime < 5000)
+    while (eltime < 7000)
     {
         eltime = millis() - previousTime;
         Yt = ReadStrainGauge();
@@ -275,7 +275,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x01)
     {
-        stim(200);
+        stim_right(200);
         distend();
     }
     // 300 gramos
@@ -287,7 +287,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x02)
     {
-        stim(300);
+        stim_right(300);
         distend();
     }
     // 400 gramos
@@ -299,7 +299,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x03)
     {
-        stim(400);
+        stim_right(400);
         distend();
     }
     // 600 gramos
@@ -311,7 +311,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x04)
     {
-        stim(600);
+        stim_right(600);
         distend();
     }
 }

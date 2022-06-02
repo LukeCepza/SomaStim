@@ -13,7 +13,6 @@ RF24 radio(9, 10); // using pin 9 for the CE pin, and pin 10 for the CSN pin
 // Let these addresses be used for the pair
 
 uint8_t address[][6] = {"M2T", "M2A", "M2V"};
-//bool radioNumber = 2;
 byte payload;  
 
 void setup() {
@@ -45,8 +44,6 @@ void setup() {
   // number of bytes we need to transmit a float
   radio.setPayloadSize(sizeof(payload)); // float datatype occupies 4 bytes
   // set the TX address of the RX node into the TX pipe
-  //
-  //radio.stopListening();
 }
 
 
@@ -70,13 +67,13 @@ void loop() {
       delay(500);
       lcd.setRGB(0, 250, 0);
       lcd.setCursor(0, 1);
-      lcd.print("Succesful       ");
+      lcd.print("   Successful   ");
 
     }else {
       Serial.println(F("Transmission failed or timed out")); // payload was not delivered
       lcd.setRGB(250, 0, 0);
       lcd.setCursor(0, 1);
-      lcd.print("Failed          ");
+      lcd.print("     Failed     ");
     }
   }
 }
@@ -89,42 +86,34 @@ byte SerialEvent(){
     char markers = Serial.read();
     Fmar += markers;  
     }
-  if(Fmar.indexOf("10001")>=0) {
-    //agregar el valor del canal
-    radio.openWritingPipe(address[0]);      
-    ret = 0x10;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("Caricia - INICIO");
-    }
   if(Fmar.indexOf("33024")>=0) {
     //agregar el valor del canal
     radio.openWritingPipe(address[0]);      
     ret = 0x01;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia 2N 33024");
+    lcd.print("CARESS 2N 33024 ");
     }
   else if(Fmar.indexOf("33025")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x02;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia 3N 33025");
+    lcd.print("CARESS 3N 33025 ");
      }
   else if(Fmar.indexOf("33026")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x03;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia 4N 33026");
+    lcd.print("CARESS 4N 33026 ");
     }
   else if(Fmar.indexOf("33027")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x04;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia 6N 33027");
+    lcd.print("CARESS 6N 33027 ");
     }
   else if(Fmar.indexOf("33028")>=0) {
     radio.openWritingPipe(address[1]);
@@ -187,32 +176,59 @@ byte SerialEvent(){
     ret = 0x0D;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia TENSE 2N");
+    lcd.print("CARESS TENSE 2N ");
      }
   else if(Fmar.indexOf("33037")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x0E;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia TENSE 3N");
+    lcd.print("CARESS TENSE 3N ");
      }
   else if(Fmar.indexOf("33038")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x0F;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("Caricia TENSE 4N");
+    lcd.print("CARESS TENSE 4N ");
   }
   else if(Fmar.indexOf("33039")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x10;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);  
-    lcd.print("Caricia TENSE 6N");
+    lcd.print("CARESS TENSE 6N ");
      }
+  else if(Fmar.indexOf("33064")>=0) {
+    radio.openWritingPipe(address[2]);
+    ret = 0x11;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("START THRESHOLD ");
+    }
+  else if(Fmar.indexOf("33061")>=0) {
+    radio.openWritingPipe(address[2]);
+    ret = 0x12;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print(" THRESHOLD SENT ");
 
-  if (ret!=0){
-    digitalWrite(7,HIGH);
-  }
+    }
+  else if(Fmar.indexOf("33042")>=0) {
+    radio.openWritingPipe(address[2]);
+    ret = 0x13;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("STOP STIMUL 33042");
+    }
+  else if(Fmar.indexOf("32770")>=0) {
+    radio.openWritingPipe(address[2]);
+    ret = 0xFF;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print(" EXPERIMENT DONE ");
+
+    }
+    
   return ret;
 }
