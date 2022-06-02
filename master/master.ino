@@ -199,13 +199,19 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);  
     lcd.print("CARESS TENSE 6N ");
      }
+<<<<<<< HEAD
   else if(Fmar.indexOf("33064")>=0) {
     radio.openWritingPipe(address[2]);
+=======
+  else if(Fmar.indexOf("33041")>=0) {
+    radio.openWritingPipe(address[1]);
+>>>>>>> a7cbbe5212819fd4b19b99a0d2af9308198d3900
     ret = 0x11;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print("START THRESHOLD ");
     }
+<<<<<<< HEAD
   else if(Fmar.indexOf("33061")>=0) {
     radio.openWritingPipe(address[2]);
     ret = 0x12;
@@ -230,5 +236,14 @@ byte SerialEvent(){
 
     }
     
+=======
+  else if(Fmar.indexOf("33042")>=0) {
+    radio.openWritingPipe(address[1]);
+    ret = 0x12;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("      STOP      ");
+    }
+>>>>>>> a7cbbe5212819fd4b19b99a0d2af9308198d3900
   return ret;
 }
