@@ -28,7 +28,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>D:/Kevin_Cepeda/shared_git/neuro/SomaStim/openvibe/LabelsAmbienteOV.lua</Value>
+					<Value>D:/Kevin_Cepeda/shared_git/neuro/SomaStim/openvibe/Air.lua</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 			</Settings>
@@ -370,7 +370,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
 					<DefaultValue>${Path_Data}/plugins/stimulation/simple-keyboard-to-stimulations.txt</DefaultValue>
-					<Value>D:/Kevin_Cepeda/shared_git/neuro/SomaStim/openvibe/Keyboard.txt</Value>
+					<Value>D:/Kevin_Cepeda/shared_git/neuro/SomaStim/openvibe/Keyboardair.txt</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 			</Settings>
