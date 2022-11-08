@@ -22,7 +22,7 @@ int motor=5;
 // Create instance of Haptic motor
 SFE_HMD_DRV2605L HMD; //Create haptic motor driver object 
 
-uint8_t rtpn[3]  = {63,127,191,255};    //levels of intensity for the motors
+uint8_t rtpn[4]  = {63,127,191,255};    //levels of intensity for the motors
 int ln=4;
 
 byte incr = 0x05;     //intensidad incrementa de 2 and 2
