@@ -5,19 +5,16 @@ function initialize(box)
 
 end
 
-local begin_th_vib_id = 0x00008128
-local th_vib_id= 33061
-local wait = false
-local do_once_begin = true
-local stop_all = false
-local do_thrs = true
-local th_times = 0 	--es el numero de veces que se ha hecho el threshold.
+local begin_th_vib_id 	= 0x00008128
+local th_vib_id		= 33061
+local do_once_begin 	= true
+local stop_all 		= false
 
-local vibracion = {33032, 33033, 33034, 33035}	--tags corresponding to vibration
-local stop_vib_air =  33042
-local stim_length = 3				--duration of stimulation
-local stim_rest_length = 8 			--duration of stimulation (3) and resting (5)
-local st = 20					--number of stimuli
+local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
+local stop_vib_air 	=  33042
+local stim_length 	= 3				--duration of stimulation
+local stim_rest_length 	= 8 				--duration of stimulation (3) and resting (5)
+local st 		= 20				--number of stimuli
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
@@ -25,14 +22,12 @@ function uninitialize(box)
 end
 
 function process(box)
-
 	io.write("process has been called\n")
 
 	-- loop until box:keep_processing() returns zero
 	-- cpu will be released with a call to sleep
 	-- at the end of the loop
 	while box:keep_processing() do
-		
 		t = box:get_current_time()
 		for input = 1, box:get_input_count() do
 			for stimulation = 1, box:get_stimulation_count(input) do
@@ -55,7 +50,6 @@ function process(box)
 		t_lag = box:get_current_time() --t_lag es el tiempo del ultimo estimulo
 
 		if (Do_experiment) then
-
 		    --t_lag = t_lag + 120 t_lag varies depending on the threshold measurement
 
  		    n=3
@@ -74,6 +68,3 @@ function process(box)
 
 	end
 end
-
-
-
