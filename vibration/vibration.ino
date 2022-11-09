@@ -17,21 +17,19 @@ byte payload = 0x00;
 
 // Variables
 // byte payload = 0x00;
-int lvl=0;
-int motor=5;
+int lvl   =0;
+int motor =5;
 // Create instance of Haptic motor
 SFE_HMD_DRV2605L HMD; //Create haptic motor driver object 
 
-uint8_t rtpn[4]  = {63,127,191,255};    //levels of intensity for the motors
-int ln=4;
-
-byte incr = 0x05;     //intensidad incrementa de 2 and 2
-//intensidad comienza en 0
-byte max=0xFF;
-int tshold,x=0;
-uint8_t thold =0x00;
-bool ths = false;
-int numths = 0;
+uint8_t rtpn[4] = {63,127,191,255};    //levels of intensity for the motors
+int ln          = 4;
+byte incr       = 0x05;     //intensidad incrementa de 5 and 5
+  //intensidad comienza en 0
+byte max              = 0xFF;
+int tshold,x, numths  = 0;
+uint8_t thold         = 0x00;
+bool ths              = false;
 
 void setup() {
   HMD.begin();
@@ -42,9 +40,9 @@ void setup() {
   pinMode(7, OUTPUT);
 
   HMD.begin();
-  HMD.Mode(0x05);                    // Internal trigger input mode -- Must use the GO() function to trigger playback.
-  HMD.MotorSelect(0x36);    // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)
-  HMD.Library(2);                 // 1-5 & 7 for ERM motors, 6 for LRA motors
+  HMD.Mode(0x05);            // Internal trigger input mode -- Must use the GO() function to trigger playback.
+  HMD.MotorSelect(0x36);     // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)
+  HMD.Library(2);            // 1-5 & 7 for ERM motors, 6 for LRA motors
   delay(10);         
 
 // From RF24 library example: GettingStarted***** 
