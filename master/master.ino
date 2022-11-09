@@ -87,7 +87,7 @@ byte SerialEvent(){
     Fmar += markers;  
     }
 //Caress protocol -TENSE
-  else if(Fmar.indexOf("33036")>=0) {
+  if(Fmar.indexOf("33036")>=0) {
     radio.openWritingPipe(address[0]);
     ret = 0x0D;
     lcd.setRGB(0, 0, 100);
@@ -116,7 +116,7 @@ byte SerialEvent(){
     lcd.print("CARESS TENSE 6N ");
      }
 //Caress protocol -STIMULI
-  if(Fmar.indexOf("33024")>=0) {
+  else if(Fmar.indexOf("33024")>=0) {
     //agregar el valor del canal
     radio.openWritingPipe(address[0]);      
     ret = 0x01;
