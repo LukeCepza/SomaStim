@@ -9,6 +9,7 @@ local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibratio
 local stim_length 	= 3				--duration of stimulation
 local stim_rest_length 	= 8 				--duration of stimulation (3) and resting (5)
 local st 		= 20				--number of stimuli
+local valid		= 33040				--flag to start the validation
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
@@ -22,6 +23,7 @@ function process(box)
 	-- cpu will be released with a call to sleep
 	-- at the end of the loop
 	while box:keep_processing() do
+	            box:send_stimulation(1, valid, 1, 0)		--start validation process		    
 		    t_lag = 20
 
  		    n=3
@@ -31,7 +33,6 @@ function process(box)
 			box:log("Info", string.format('%i at %i', vibracion[n], t_lag + (i-1)*stim_rest_length))
 		    End
 
-		    Do_experiment =  false
 	       	    box:send_stimulation(1,32770, t_lag + (st*8)+stim_length, 0)   --mandar estimulo para terminar
 		
 		-- releases cpu
