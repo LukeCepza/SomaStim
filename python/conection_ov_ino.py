@@ -9,14 +9,17 @@ lastTime=0
 try:
     print("Attempting connection to Arduino")
     arduino=serial.Serial('COM3',baudrate=500000)
-    arduino.open()
 except:
-    print("Unrecognized port or already in use")
+    print("Unrecognized port")
     exit()
 
-time.sleep(2)
-print("Looking for OpenVibe Marker Stream...")
+try:
+    arduino.open()
+except:
+    print("Port already in use")
+    exit()
 
+print("Looking for OpenVibe Marker Stream...")
 streams = resolve_bypred('name', 'openvibeMarkers',timeout=1)
 while(len(streams) == 0):
     print("OpenVibe Connection failed. Attempting again ...")
