@@ -9,7 +9,7 @@ local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibratio
 local stim_length 	= 3				--duration of stimulation
 local stim_rest_length 	= 8 				--duration of stimulation (3) and resting (5)
 local st 		= 20				--number of stimuli
-local valid		= 33040				--flag to start the validation
+local valid		= 33041				--flag to start the validation
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)

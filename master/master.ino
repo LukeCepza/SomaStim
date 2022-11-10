@@ -196,6 +196,13 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("STOP STIMUL 33042");//AIR
     }
+  else if(Fmar.indexOf("33044")>=0){
+    radio.openWritingPipe(address[2]);
+    ret = 0X17;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("VALIDATION 33044");  //AIR
+  }
   
 //vibration protocol
   else if(Fmar.indexOf("33032")>=0) {
@@ -247,6 +254,13 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("STOP STIMUL 33042");
     }
+  else if(Fmar.indexOf("33041")>=0){
+    radio.openWritingPipe(address[2]);
+    ret = 0X18;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("VALIDATION 33041");  //VIB
+  }
 //FINISH EXPERIMENT
   else if(Fmar.indexOf("32770")>=0) {
     radio.openWritingPipe(address[2]);

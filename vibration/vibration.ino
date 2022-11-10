@@ -29,7 +29,7 @@ byte incr       = 0x05;     //intensidad incrementa de 5 and 5
 byte max              = 0xFF;
 int tshold,x, numths  = 0;
 uint8_t thold         = 0x00;
-bool ths              = false;
+bool ths,vld          = false;
 
 void setup() {
   HMD.begin();
@@ -85,9 +85,12 @@ void loop() {
 }
 
 void SerialEventWrite(byte rec){
-  // checks if label is the one for marking the threshold (0xF0 - es solo un ejemplo) o is no
-  // the label of STOP (0xFF -ejemplo)
+// change flag of validation to avoid changing the motors
+  if(rec == 0x18){
+    vld = true;   
+  }
   
+// checks if label is the one for marking the threshold (0xF0 - es solo un ejemplo) o is no  
   if(rec==0x11){
     ths = true;
       //funciรณn abajo
@@ -162,19 +165,28 @@ void SerialEventWrite(byte rec){
        HMD.RTP(rtpn[(lvl+3)]);
        digitalWrite (motor,HIGH);
       }
+     
      if(rec ==0x13){
        HMD.RTP(0x00);
        Serial.println("STOP");
        digitalWrite (motor,LOW);
-
-      if (motor < 7){ //increase by one the motor, change to other
-        motor++;
-        delay(10);
-       }
-       else { //if all three motors were used, restart from zero
-         motor = 5;
-       }
-      }
-     
+      //avoid changing motors when validation is done
+      if(vld == false){
+        if (motor < 7){ //increase by one the motor, change to other
+          motor++;
+          delay(10);
+         } else { //if all three motors were used, restart from zero
+           motor = 5;
+         }
+        }
+     }
+    
+    // if experiment is over, restore everyhting 
+     if (rec == 0xFF){
+      Serial.println("EXPERIMENT FINISHED");
+      digitalWrite (motor,LOW);
+      vld = false;
+      motor = 5;
+     }
   } // else
 } // serialeventwrite
