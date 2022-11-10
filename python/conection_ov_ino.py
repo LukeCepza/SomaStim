@@ -3,12 +3,12 @@ from pylsl import StreamInlet, resolve_bypred, StreamInfo, StreamOutlet
 import time
 import serial
 
-ArduinoCOM = chr(sys.argv)
+ArduinoCOM = str(sys.argv)
 
 lastTime=0
 try:
     print(2)
-    arduino=serial.Serial(ArduinoCOM,baudrate=500000)
+    arduino=serial.Serial("COM3",baudrate=500000)
     arduino.open()
 except:
     print("Unrecognized port or already in use")
