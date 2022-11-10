@@ -7,8 +7,8 @@ ArduinoCOM = str(sys.argv)
 
 lastTime=0
 try:
-    print(2)
-    arduino=serial.Serial("COM3",baudrate=500000)
+    print("Attempting connection to Arduino")
+    arduino=serial.Serial('COM3',baudrate=500000)
     arduino.open()
 except:
     print("Unrecognized port or already in use")
