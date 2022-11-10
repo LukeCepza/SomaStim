@@ -1,23 +1,30 @@
 import sys; sys.path.append('./pylsl')
-from pylsl import StreamInlet, resolve_stream, StreamInfo, StreamOutlet
+from pylsl import StreamInlet, resolve_bypred, StreamInfo, StreamOutlet
 import time
 import serial
-import keyboard
+
+ArduinoCOM = str(sys.argv)
+
 lastTime=0
-arduino=serial.Serial('COM15',baudrate=500000)
 try:
-    arduino.close()
+    print(2)
+    arduino=serial.Serial(ArduinoCOM,baudrate=500000)
+    arduino.open()
 except:
-    print("Port alread closed")
-arduino.open()
+    print("Unrecognized port or already in use")
+    exit()
 
-time.sleep(1.8)
+time.sleep(2)
+print("Looking for OpenVibe Marker Stream...")
 
-streams = resolve_stream('name', 'openvibeMarkers')
-if len(streams) == 0:
-    print("Cant find markers stream")
-else: 
-    print("Markers")
+streams = resolve_bypred('name', 'openvibeMarkers',timeout=1)
+while(len(streams) == 0):
+    print("OpenVibe Connection failed. Attempting again ...")
+    time.sleep(2)  
+    streams = resolve_bypred('name', 'openvibeMarkers',timeout=1)
+      
+print("OpenVibe Connection Stablished :D")
+
 inlet = StreamInlet(streams[0])
 
 while True:
@@ -27,13 +34,15 @@ while True:
             data = str(marker[0]).encode('utf-8')
             bytest = arduino.write(str(marker[0]).encode('utf-8'))
         print(marker[0], "at t = ", timestamp)
-        print("se envio", data, "bytes ; Etiqueta", data)
+        print("Sent ", data, "; Marker is ", data)
         time.sleep(0.01)
 
     if marker == 32770:
-        print('Program finised')
+        print('Program finished. Closing Arduino port')
+        print('Closing Arduino port')
         try:
             arduino.close()
         except:
             print("Port closed already") 
+            exit()
         break
