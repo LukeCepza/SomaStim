@@ -197,7 +197,7 @@ byte SerialEvent(){
     lcd.print("STOP STIMUL 33042");//AIR
     }
   else if(Fmar.indexOf("33044")>=0){
-    radio.openWritingPipe(address[2]);
+    radio.openWritingPipe(address[1]);
     ret = 0X17;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
