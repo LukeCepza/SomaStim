@@ -3,7 +3,7 @@ from pylsl import StreamInlet, resolve_bypred, StreamInfo, StreamOutlet
 import time
 import serial
 
-ArduinoCOM = str(sys.argv)
+ArduinoCOM = chr(sys.argv)
 
 lastTime=0
 try:
