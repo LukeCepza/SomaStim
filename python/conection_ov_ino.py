@@ -6,12 +6,20 @@ import serial
 ArduinoCOM = str(sys.argv)
 
 lastTime=0
+
+
+
 try:
     print("Attempting connection to Arduino")
     arduino=serial.Serial('COM3',baudrate=500000)
 except Exception as e:
     print(e)
     print("Unrecognized port")
+
+try:
+    arduino.close()
+except:
+    print("Closing aruino instance")
 
 try:
     arduino.open()
