@@ -13,8 +13,7 @@ int fan = 3;
 int incr = 5;     //intensidad incrementa de 5 and 5
 //intensidad comienza en 0
 byte max=0xFF;
-int tshold,pz = 255;
-int x, numths = 0;
+int tshold, x, pz, numths = 0;
 uint8_t thold =0x00;
 bool ths = false;
 //int numths = 0;
@@ -49,6 +48,8 @@ void setup() {
   radio.openReadingPipe(1, address[1]);   // pipe 2 "M2A" - Master to Air
   radio.startListening();                 // put radio in RX mode
   // --- From RF24 library example: GettingStarted --- //
+  pz=(0xFF-tshold)/(ln-1);
+
 }
 
 void loop() {
@@ -74,8 +75,7 @@ void SerialEventWrite(byte rec){
   // the label of STOP (0xFF -ejemplo)
   if(rec==0x14){
     ths = true;
-    tshold = 0;
-      //funcion abajo
+      //funciÃ³n abajo
     Serial.println("Thrs Ready");
   }
 
