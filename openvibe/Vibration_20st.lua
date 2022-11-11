@@ -1,7 +1,12 @@
 -- this function is called when the box is initialized
 function initialize(box)
 	io.write("initialize has been called\n");
+<<<<<<< HEAD
 	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
+=======
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") --for Kevin's pc
+	--dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") --for Erick's pc
+>>>>>>> parent of a222ab6 (Regreso al anterior)
 
 end
 
