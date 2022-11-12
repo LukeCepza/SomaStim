@@ -13,12 +13,18 @@ int fan = 3;
 int incr = 5;     //intensidad incrementa de 5 and 5
 //intensidad comienza en 0
 byte max=0xFF;
+<<<<<<< HEAD
 int tshold, x, pz, numths = 0;
+=======
+int tshold,pz =0;
+//int pz = 255;
+int x, numths = 0;
+>>>>>>> 4af86a51bc7c20a31e605eab0163f88496f7e80a
 uint8_t thold =0x00;
 bool ths = false;
 //int numths = 0;
 int ln = 4;       // nÃºmero de partes a divir
-
+uint8_t fz[4] = {63,127,191,255};    //levels of intensity for the motors
 
 
 void setup() {
@@ -104,27 +110,32 @@ void SerialEventWrite(byte rec){
   }else{
   //else, then ths is false, so the STOP label received will affect the stimuli actions
     if(rec==0x05) {           // label/code 33024
-     //analogWrite (fan, map(256,0,1024,tshold,1024));    // 1/4 of intensity
-     analogWrite (fan, tshold);    // 1/4 of intensity
+     //analogWrite (fan, tshold);    // 1/4 of intensity
+     analogWrite(fan,fz[0]);
      Serial.println("Intensidad: ");
-     Serial.println(tshold);
+     //Serial.println(tshold);
+     Serial.println(fz[0]);
      }
     if(rec==0x06) {           // label/code 33025
-      //analogWrite (fan,map(512,0,1024,tshold,1024));   // 1/2 half intensity
-      analogWrite (fan, tshold + pz);    // 2/4 of intensity
+      //analogWrite (fan, tshold + pz);    // 2/4 of intensity
+      analogWrite (fan, fz[1]);    // 2/4 of intensity
       Serial.println("Intensidad: ");
-      Serial.println(tshold + pz);
+      //Serial.println(tshold + pz);
+      Serial.println(fz[1]);
      }
     if(rec==0x07) {           // label/code 33026
-      //analogWrite (fan,map(768,0,1024,tshold,1024));   // 3/4 of intensity
-      analogWrite (fan, tshold + pz*2);    // 3/4 of intensity
+     //analogWrite (fan, tshold + pz*2);    // 3/4 of intensity
+      analogWrite (fan, fz[2]);    // 2/4 of intensity
       Serial.println("Intensidad: ");
-      Serial.println(tshold + 2*pz);
+      //Serial.println(tshold + 2*pz);
+      Serial.println(fz[2]);
      }  
     if(rec==0x08){            // label/code 33027
-      analogWrite (fan, tshold + 3*pz);   // full
+      //analogWrite (fan, tshold + 3*pz);   // full
+      analogWrite (fan, fz[3]);    // 2/4 of intensity
       Serial.println("Intensidad: ");
-      Serial.println(tshold + 3*pz);
+      //Serial.println(tshold + 3*pz);
+      Serial.println(fz[3]);
      }
     if (rec == 0x16){     // STOP STIMULI LABEL
       analogWrite (fan,0);

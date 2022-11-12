@@ -2,6 +2,10 @@
 function initialize(box)
 	io.write("initialize has been called\n");
 	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") 
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 4af86a51bc7c20a31e605eab0163f88496f7e80a
 end
 
 local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
