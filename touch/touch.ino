@@ -106,25 +106,13 @@ void setup()
 //**************************** LOOP *********************************//
 void loop()
 {
-    //    uint8_t pipe;
-    //    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
-    //        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
-    //        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
-    //
-    //        SerialEventWrite(payload);
-    //    }
-    SerialEventWrite(0x0D);
-    SerialEventWrite(0x01);
-    distend();
-    SerialEventWrite(0x0E);
-    SerialEventWrite(0x02);
-    distend();
-    SerialEventWrite(0x0F);
-    SerialEventWrite(0x03);
-    distend();
-    SerialEventWrite(0x10);
-    SerialEventWrite(0x04);
-    distend();
+    uint8_t pipe;
+    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
+        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
+        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
+        SerialEventWrite(payload);
+    }
+
 } //**************************** END LOOP ***************************//
 
 // Aumentar la tension de forma estatica.

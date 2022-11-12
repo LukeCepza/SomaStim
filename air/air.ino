@@ -13,13 +13,9 @@ int fan = 3;
 int incr = 5;     //intensidad incrementa de 5 and 5
 //intensidad comienza en 0
 byte max=0xFF;
-<<<<<<< HEAD
-int tshold, x, pz, numths = 0;
-=======
 int tshold,pz =0;
 //int pz = 255;
 int x, numths = 0;
->>>>>>> 4af86a51bc7c20a31e605eab0163f88496f7e80a
 uint8_t thold =0x00;
 bool ths = false;
 //int numths = 0;
