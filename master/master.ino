@@ -268,7 +268,6 @@ byte SerialEvent(){
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print(" EXPERIMENT DONE ");
-
     }
     
   return ret;

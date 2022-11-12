@@ -5,9 +5,9 @@ function initialize(box)
 end
 
 local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
-local stim_length 	= 3				--duration of stimulation
-local stim_rest_length 	= 8 				--duration of stimulation (3) and resting (5)
-local st 		= 20				--number of stimuli
+local stim_length 	= 0.5				--duration of stimulation
+local stim_rest_length 	= 4 				--duration of stimulation (3) and resting (5)
+local st 		= 40				--number of stimuli
 local stop_vib 		= 33042
 local t_lag			= 20
 local valid        = 33041                --flag to start the validation
