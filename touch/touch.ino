@@ -179,7 +179,7 @@ void stim_right(int newtons)
     int mov = 5;
     int m = newtons / 200; //This constant is to adjust the tension if it is decaying
     ;
-    while ((eltime < 7000) && ((ang_01 - cur_ang) > 0) && ((ang_02 - cur_ang) > 0))
+    while ((eltime < 6000) && ((ang_01 - cur_ang) > 0) && ((ang_02 - cur_ang) > 0))
     {
         cur_ang = cur_ang + mov;
         if (Yt < newtons - .02 * newtons)
@@ -255,7 +255,7 @@ void stim(int newtons)
 void SerialEventWrite(byte rec)
 {
     // 200 gramos
-    if (rec == 0x0D)
+    if (rec == 0x0D) //
     {
         zerotare();
         ten = 0;
@@ -299,7 +299,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x04)
     {
-        stim_right(600);
+        stim(600);
         distend();
     }
 }
