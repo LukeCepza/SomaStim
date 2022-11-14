@@ -6,8 +6,8 @@ function initialize(box)
 end
 
 local aire 			= {33028, 33029, 33030, 33031}
-local stim_length 	= 3				--duration of stimulation
-local stim_rest_length 	= 8 				--duration of stimulation (3) and resting (5)
+local stim_length 	= 1				--duration of stimulation
+local stim_rest_length 	= 3 			--duration of stimulation (3) and resting (5)
 local st 		    = 20				--number of stimuli
 local stop_air 		=  33043
 local t_lag			= 20

@@ -19,7 +19,7 @@ end
 
 function process(box)
 	io.write("process has been called\n")
-	box:send_stimulation(1, valid, 5, 0)        --start validation process   
+	box:send_stimulation(1, valid, 15, 0)        --start validation process   
 	box:log("Info", string.format('%i at %i', valid, 5))
          
 		n=3

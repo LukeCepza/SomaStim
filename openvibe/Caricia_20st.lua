@@ -5,9 +5,9 @@ function initialize(box)
 	--box:log("Info", string.format('begin'))
 end
 
-local stim_rest_length = 11 --duration of resting + stimulation
-local tense_length = stim_rest_length -6
-local stim_length = stim_rest_length	--duration of stimulation
+local stim_rest_length = 11.5 --duration of resting + stimulation : 11.5
+local tense_length = stim_rest_length - 4.5 -- 7
+local stim_length = stim_rest_length- tense_length --duration of stimulation : 1.5
 
 local caricia 		= {33024, 33025, 33026, 33027}
 local caricia_tense 	= {33036, 33037, 33038, 33039}
@@ -26,10 +26,10 @@ function process(box)
          
 		n=3
 		for i=1, st, 1 do
-			box:send_stimulation(1,caricia_tense[n], t_lag + (i-1)*stim_rest_length -6, 0)   --Start tense
-			box:send_stimulation(1,caricia[n], t_lag + (i-1)*stim_length, 0)   --Start tense
-			box:log("Info", string.format('%i at %i',caricia_tense[n], t_lag + (i-1)*stim_rest_length-6))
-			box:log("Info", string.format('%i at %i',caricia[n], t_lag + (i-1)*stim_length))
+			box:send_stimulation(1,caricia_tense[n], t_lag + (i-1)*stim_rest_length, 0)   --Start tense
+			box:send_stimulation(1,caricia[n], t_lag + (i-1)*stim_rest_length + (tense_length+1), 0)   --Start stimulus			
+			box:log("Info", string.format('%i at %i',caricia_tense[n],  t_lag + (i-1)*stim_rest_length))
+			box:log("Info", string.format('%i at %i',caricia[n], t_lag + (i-1)*stim_rest_length + (tense_length+1)))
 		end	
 			box:send_stimulation(1,32770, t_lag+11*stim_rest_length+stim_length+5, 0)   --mandar estimulo para terminar
 	
