@@ -5,7 +5,7 @@ function initialize(box)
 	--box:log("Info", string.format('begin'))
 end
 
-local stim_rest_length = 11 --duration of resting + stimulation
+local stim_rest_length = 15 --duration of resting + stimulation
 local tense_length = stim_rest_length -6
 local stim_length = stim_rest_length	--duration of stimulation
 
