@@ -19,8 +19,6 @@ local t_lag = 20
 -- this function is called when the box is uninitialized
 function uninitialize(box)
 	io.write("uninitialize has been calle d\n")
-	--box:log("Info", string.format('finished at %i',box:get_current_time()))
-	--box:send_stimulation(1,32770,box:get_current_time()+0.1,0)
 end
 
 function process(box)
@@ -32,7 +30,7 @@ function process(box)
 			box:send_stimulation(1,caricia[n], t_lag + (i-1)*stim_length, 0)   --Start tense
 			box:log("Info", string.format('%i at %i',caricia_tense[n], t_lag + (i-1)*stim_rest_length-6))
 			box:log("Info", string.format('%i at %i',caricia[n], t_lag + (i-1)*stim_length))
-			
+		end	
 			box:send_stimulation(1,32770, t_lag+11*stim_rest_length+stim_length+5, 0)   --mandar estimulo para terminar
 	
 	-- releases cpu
