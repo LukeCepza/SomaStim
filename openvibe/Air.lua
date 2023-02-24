@@ -1,27 +1,17 @@
 -- this function is called when the box is initialized
 function initialize(box)
 	io.write("initialize has been called\n");
-
 	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
-
-	-- inspects the box topology
-	--io.write(string.format("box has %i input(s)\n", box:get_input_count()))
-	--io.write(string.format("box has %i output(s)\n", box:get_output_count()))
-	--io.write(string.format("box has %i setting(s)\n", box:get_setting_count()))
-	--for i = 1, box:get_setting_count() do
-	--	io.write(string.format(" - setting %i has value [%s]\n", i, box:get_setting(i)))
-	--end
-
+	box:log("Info", string.format('begin'))
 end
-    
-local caricias={33024,33025,33026,33027} --Colocar codigo de etiquetas {2N,3N,4N,6N}
-local caricias_tensado = {33036,33037,33038,33039}
-local aire = {33028,33029,33030,33031}
-local stop_vib_air =  33042
-local begin_th_air_id = 0x00008128
-local th_air_id= 33061
-local paro= {33042}
-local t0={60, 248,436,624}
+local stim_length = 5	--duration of stimulation
+local stim_rest_length = 30 --duration of resting + stimulation
+
+local aire 			= {33028, 33029, 33030, 33031}
+local stop_air_th 	=  33062
+local stop_air 		=  33043
+local begin_air_th 	= 33065
+
 local wait = false
 local do_once_begin_thrs = true
 local received_thrshold = false
@@ -30,6 +20,8 @@ local th_times = 0 --es el numero de veces que se ha hecho el threshold.
 -- this function is called when the box is uninitialized
 function uninitialize(box)
 	io.write("uninitialize has been called\n")
+	box:log("Info", string.format('finished at %i',box:get_current_time()))
+	box:send_stimulation(1,32770,box:get_current_time()+0.1,0)
 end
 
 function process(box)
@@ -45,13 +37,13 @@ function process(box)
 
 				identifier, date, duration = box:get_stimulation(input, 1)
 
-				if (identifier == 0x00008128) and (do_once_begin_thrs) then 
-					box:log("Info", string.format('begin thds %i at %i',0x00008128,t))
-					box:send_stimulation(1,0x00008128,t+0.01,0)
+				if (identifier == 0x00008129) and (do_once_begin_thrs) then 
+					box:log("Info", string.format('begin thds %i at %i',0x00008129,t))
+					box:send_stimulation(1,0x00008129,t+0.01,0)
 					Do_th = true
 					received_thrshold = false
 					do_once_begin_thrs = false --una vez que se ejecuta ya no se vuelve a ejecutar nunca
-				elseif (identifier == 0x00008125) then
+				elseif (identifier == 0x00008126) then
 					received_thrshold = true
 				end
 				box:remove_stimulation(input, 1)
@@ -61,20 +53,19 @@ function process(box)
 		if (Do_th) then --Si se dio la orden de hacer threshold 
 					
 			if (not wait) then --Comenzar el threshold
-				box:log("Info", string.format('begin thds %i at %i',0x00008128,t))
+				box:log("Info", string.format('begin thds %i at %i',0x00008129,t))
 
-				box:send_stimulation(1,begin_th_air_id,t,0)
+				box:send_stimulation(1,begin_air_th,t,0)
 				t_lag = box:get_current_time() --t_lag es el tiempo del ultimo estimulo
 				wait = true
 				do_thrs = true
-			elseif (t >= t_lag+25) then --25 --Queremos que se ejecute 20 segundos despues de que comienza el threshold
+			elseif (t >= t_lag+50) then --25 --Queremos que se ejecute 20 segundos despues de que comienza el threshold
 				box:log("Info", string.format('exceded time'))
 				th_times = th_times + 1
 				wait = false
 			elseif (received_thrshold) and (do_thrs) then --Si recibe estimulo de threshold lo envia y sigue esperando los 20 segundos
-				box:log("Info", string.format('THDS %i at %i',0x00008125,t))
-
-				box:send_stimulation(1,th_air_id,t,0)
+				box:log("Info", string.format('THDS %i at %i',0x00008126,t))
+				box:send_stimulation(1,stop_air_th,t,0)
 				received_thrshold = false
 				do_thrs = false
 			else
@@ -89,55 +80,51 @@ function process(box)
 		end
 
 		if (Do_experiment) then
-			local aire = {33028,33029,33030,33031} --tags corresponding to vibration
-			local stop_vib_air =  33042
-			local stim_length = 4	--duration of stimulation
-			local stim_rest_length = 30 --duration of stimulation and resting
 
 			t_lag = t_lag + 120 --t_lag varies depending on the threshold measurement
 			n=1
-			box:send_stimulation(1,aire[n], t_lag + 0*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 0*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 0*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 0*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 0*stim_rest_length))
-		    box:send_stimulation(1,aire[n], t_lag + 1*stim_rest_length, 0)   --Start Vib
-			box:send_stimulation(1,stop_vib_air, t_lag + 1*stim_rest_length+stim_length, 0)   --Stop Vib
+		    box:send_stimulation(1,aire[n], t_lag + 1*stim_rest_length, 0)   --Start air
+			box:send_stimulation(1,stop_air, t_lag + 1*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 1*stim_rest_length))
-			box:send_stimulation(1,aire[n], t_lag + 2*stim_rest_length, 0)   --Start Vib
-			box:send_stimulation(1,stop_vib_air, t_lag + 2*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 2*stim_rest_length, 0)   --Start air
+			box:send_stimulation(1,stop_air, t_lag + 2*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 2*stim_rest_length))
 		    n=2
-			box:send_stimulation(1,aire[n], t_lag + 3*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 3*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 3*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 3*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 3*stim_rest_length))
-		    box:send_stimulation(1,aire[n], t_lag + 4*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 4*stim_rest_length+stim_length, 0)   --Stop Vib
+		    box:send_stimulation(1,aire[n], t_lag + 4*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 4*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 4*stim_rest_length))
-			box:send_stimulation(1,aire[n], t_lag + 5*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 5*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 5*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 5*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 5*stim_rest_length))
 		    n=3
-			box:send_stimulation(1,aire[n], t_lag + 6*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 6*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 6*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 6*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 6*stim_rest_length))
-		    box:send_stimulation(1,aire[n], t_lag + 7*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 7*stim_rest_length+stim_length, 0)   --Stop Vib
+		    box:send_stimulation(1,aire[n], t_lag + 7*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 7*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 7*stim_rest_length))
-			box:send_stimulation(1,aire[n], t_lag + 8*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 8*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 8*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 8*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 8*stim_rest_length))
 		    n=4
-			box:send_stimulation(1,aire[n], t_lag + 9*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 9*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 9*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 9*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 9*stim_rest_length))
-		    box:send_stimulation(1,aire[n], t_lag + 10*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 10*stim_rest_length+stim_length, 0)   --Stop Vib
+		    box:send_stimulation(1,aire[n], t_lag + 10*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 10*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 10*stim_rest_length))
-			box:send_stimulation(1,aire[n], t_lag + 11*stim_rest_length, 0)   --Start Vib
-		    box:send_stimulation(1,stop_vib_air, t_lag + 11*stim_rest_length+stim_length, 0)   --Stop Vib
+			box:send_stimulation(1,aire[n], t_lag + 11*stim_rest_length, 0)   --Start air
+		    box:send_stimulation(1,stop_air, t_lag + 11*stim_rest_length+stim_length, 0)   --Stop air
 			box:log("Info", string.format('%i at %i',aire[n], t_lag + 11*stim_rest_length))
 
 			Do_experiment =  false
-			box:send_stimulation(1,32770, t_lag + 12*30+stim_length, 0)   --mandar estimulo para terminar
+			box:send_stimulation(1,32770, t_lag+11*stim_rest_length+stim_length+5, 0)   --mandar estimulo para terminar
 		end
 		-- releases cpu
 		box:sleep()

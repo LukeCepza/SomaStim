@@ -86,7 +86,37 @@ byte SerialEvent(){
     char markers = Serial.read();
     Fmar += markers;  
     }
-  if(Fmar.indexOf("33024")>=0) {
+//Caress protocol -TENSE
+  if(Fmar.indexOf("33036")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0D;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("CARESS TENSE 2N ");
+     }
+  else if(Fmar.indexOf("33037")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0E;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("CARESS TENSE 3N ");
+     }
+  else if(Fmar.indexOf("33038")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x0F;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("CARESS TENSE 4N ");
+     }
+  else if(Fmar.indexOf("33039")>=0) {
+    radio.openWritingPipe(address[0]);
+    ret = 0x10;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);  
+    lcd.print("CARESS TENSE 6N ");
+     }
+//Caress protocol -STIMULI
+  else if(Fmar.indexOf("33024")>=0) {
     //agregar el valor del canal
     radio.openWritingPipe(address[0]);      
     ret = 0x01;
@@ -115,6 +145,8 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("CARESS 6N 33027 ");
     }
+  
+// Air protocol
   else if(Fmar.indexOf("33028")>=0) {
     radio.openWritingPipe(address[1]);
     ret = 0x05;
@@ -156,7 +188,6 @@ byte SerialEvent(){
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print(" THRESHOLD SENT ");//AIR
-
     }
   else if(Fmar.indexOf("33043")>=0) {
     radio.openWritingPipe(address[1]);
@@ -165,6 +196,15 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("STOP STIMUL 33042");//AIR
     }
+  else if(Fmar.indexOf("33044")>=0){
+    radio.openWritingPipe(address[1]);
+    ret = 0X17;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("VALIDATION 33044");  //AIR
+  }
+  
+//vibration protocol
   else if(Fmar.indexOf("33032")>=0) {
     radio.openWritingPipe(address[2]);
     ret = 0x09;
@@ -193,34 +233,6 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("Vibra  L4  33035");
     }
-  else if(Fmar.indexOf("33036")>=0) {
-    radio.openWritingPipe(address[0]);
-    ret = 0x0D;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("CARESS TENSE 2N ");
-     }
-  else if(Fmar.indexOf("33037")>=0) {
-    radio.openWritingPipe(address[0]);
-    ret = 0x0E;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("CARESS TENSE 3N ");
-     }
-  else if(Fmar.indexOf("33038")>=0) {
-    radio.openWritingPipe(address[0]);
-    ret = 0x0F;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("CARESS TENSE 4N ");
-  }
-  else if(Fmar.indexOf("33039")>=0) {
-    radio.openWritingPipe(address[0]);
-    ret = 0x10;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);  
-    lcd.print("CARESS TENSE 6N ");
-     }
   else if(Fmar.indexOf("33064")>=0) {
     radio.openWritingPipe(address[2]);
     ret = 0x11;
@@ -234,7 +246,6 @@ byte SerialEvent(){
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print(" THRESHOLD SENT ");
-
     }
   else if(Fmar.indexOf("33042")>=0) {
     radio.openWritingPipe(address[2]);
@@ -243,13 +254,20 @@ byte SerialEvent(){
     lcd.setCursor(0, 0);
     lcd.print("STOP STIMUL 33042");
     }
+  else if(Fmar.indexOf("33041")>=0){
+    radio.openWritingPipe(address[2]);
+    ret = 0X18;
+    lcd.setRGB(0, 0, 100);
+    lcd.setCursor(0, 0);
+    lcd.print("VALIDATION 33041");  //VIB
+  }
+//FINISH EXPERIMENT
   else if(Fmar.indexOf("32770")>=0) {
     radio.openWritingPipe(address[2]);
     ret = 0xFF;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print(" EXPERIMENT DONE ");
-
     }
     
   return ret;

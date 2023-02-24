@@ -17,22 +17,19 @@ byte payload = 0x00;
 
 // Variables
 // byte payload = 0x00;
-int lvl=0;
-int motor=5;
+int lvl   =0;
+int motor =5;
 // Create instance of Haptic motor
 SFE_HMD_DRV2605L HMD; //Create haptic motor driver object 
 
-uint8_t rtpn[0][3];    //levels of intensity for the motors
- //= {0x64, 0xB3, 0xC6, 0xE6};
-int ln=4;
-
-byte incr = 0x05;     //intensidad incrementa de 2 and 2
-//intensidad comienza en 0
-byte max=0xFF;
-int tshold,x=0;
-uint8_t thold =0x00;
-bool ths = false;
-int numths = 0;
+uint8_t rtpn[4] = {63,127,191,255};    //levels of intensity for the motors
+int ln          = 4;
+byte incr       = 0x05;     //intensidad incrementa de 5 and 5
+  //intensidad comienza en 0
+byte max              = 0xFF;
+int tshold,x, numths  = 0;
+uint8_t thold         = 0x00;
+bool ths,vld          = false;
 
 void setup() {
   HMD.begin();
@@ -43,9 +40,9 @@ void setup() {
   pinMode(7, OUTPUT);
 
   HMD.begin();
-  HMD.Mode(0x05);                    // Internal trigger input mode -- Must use the GO() function to trigger playback.
-  HMD.MotorSelect(0x36);    // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)
-  HMD.Library(2);                 // 1-5 & 7 for ERM motors, 6 for LRA motors
+  HMD.Mode(0x05);            // Internal trigger input mode -- Must use the GO() function to trigger playback.
+  HMD.MotorSelect(0x36);     // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)
+  HMD.Library(2);            // 1-5 & 7 for ERM motors, 6 for LRA motors
   delay(10);         
 
 // From RF24 library example: GettingStarted***** 
@@ -88,8 +85,12 @@ void loop() {
 }
 
 void SerialEventWrite(byte rec){
-  // checks if label is the one for marking the threshold (0xF0 - es solo un ejemplo) o is no
-  // the label of STOP (0xFF -ejemplo)
+// change flag of validation to avoid changing the motors
+  if(rec == 0x18){
+    vld = true;   
+  }
+  
+// checks if label is the one for marking the threshold (0xF0 - es solo un ejemplo) o is no  
   if(rec==0x11){
     ths = true;
       //funciรณn abajo
@@ -119,14 +120,14 @@ void SerialEventWrite(byte rec){
 
         Serial.println(" ");
 
-        rtpn[0][0]=tshold;
+        rtpn[0]=tshold;
         for (int i=0;i<(ln-1);i++){
-          rtpn[0][i+1]= rtpn[0][i] + pz;
-          Serial.println(rtpn[0][i]);
+          rtpn[i+1]= rtpn[i] + pz;
+          Serial.println(rtpn[i]);
         }
         Serial.println(" ");
         for (int j=0;j<ln;j++){
-          Serial.println(rtpn[0][j]);
+          Serial.println(rtpn[j]);
         }
       }
     }
@@ -135,7 +136,7 @@ void SerialEventWrite(byte rec){
        Serial.println("label 33032");
        Serial.println(motor);
        Serial.println("Intensidad: ");
-       Serial.println(rtpn[0][0]);
+       Serial.println(rtpn[0]);
        HMD.RTP(rtpn[(lvl)]);
        digitalWrite (motor,HIGH);
       }
@@ -143,7 +144,7 @@ void SerialEventWrite(byte rec){
        Serial.println("label 33033");
        Serial.println(motor);
        Serial.println("Intensidad: ");
-       Serial.println(rtpn[0][1]);
+       Serial.println(rtpn[1]);
        digitalWrite (motor,HIGH);       
        HMD.RTP(rtpn[(lvl+1)]);
 
@@ -152,7 +153,7 @@ void SerialEventWrite(byte rec){
        Serial.println("label 33034");
        Serial.println(motor);
        Serial.println("Intensidad: ");
-       Serial.println(rtpn[0][2]);
+       Serial.println(rtpn[2]);
        HMD.RTP(rtpn[(lvl+2)]);
        digitalWrite (motor,HIGH);
       } 
@@ -160,24 +161,32 @@ void SerialEventWrite(byte rec){
        Serial.println("label 33035");
        Serial.println(motor);
        Serial.println("Intensidad: ");
-       Serial.println(rtpn[0][3]);
+       Serial.println(rtpn[3]);
        HMD.RTP(rtpn[(lvl+3)]);
        digitalWrite (motor,HIGH);
       }
+     
      if(rec ==0x13){
        HMD.RTP(0x00);
        Serial.println("STOP");
        digitalWrite (motor,LOW);
-
-       //HMD.RTP(0);
-      if (motor < 7){ //increase by one the motor, change to other
-        motor++;
-        delay(10);
-       }
-       else { //if all three motors were used, restart from zero
-         motor = 5;
-       }
-      }
-     
+      //avoid changing motors when validation is done
+      if(vld == false){
+        if (motor < 7){ //increase by one the motor, change to other
+          motor++;
+          delay(10);
+         } else { //if all three motors were used, restart from zero
+           motor = 5;
+         }
+        }
+     }
+    
+    // if experiment is over, restore everyhting 
+     if (rec == 0xFF){
+      Serial.println("EXPERIMENT FINISHED");
+      digitalWrite (motor,LOW);
+      vld = false;
+      motor = 5;
+     }
   } // else
 } // serialeventwrite

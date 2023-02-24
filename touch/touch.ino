@@ -106,25 +106,13 @@ void setup()
 //**************************** LOOP *********************************//
 void loop()
 {
-    //    uint8_t pipe;
-    //    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
-    //        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
-    //        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
-    //
-    //        SerialEventWrite(payload);
-    //    }
-    SerialEventWrite(0x0D);
-    SerialEventWrite(0x01);
-    distend();
-    SerialEventWrite(0x0E);
-    SerialEventWrite(0x02);
-    distend();
-    SerialEventWrite(0x0F);
-    SerialEventWrite(0x03);
-    distend();
-    SerialEventWrite(0x10);
-    SerialEventWrite(0x04);
-    distend();
+    uint8_t pipe;
+    if (radio.available(&pipe)) {             // is there a payload? get the pipe number that recieved it
+        uint8_t bytes = radio.getPayloadSize(); // get the size of the payload
+        radio.read(&payload, bytes);            // fetch payload from FIFO +++++++++++++++
+        SerialEventWrite(payload);
+    }
+
 } //**************************** END LOOP ***************************//
 
 // Aumentar la tension de forma estatica.
@@ -191,7 +179,7 @@ void stim_right(int newtons)
     int mov = 5;
     int m = newtons / 200; //This constant is to adjust the tension if it is decaying
     ;
-    while ((eltime < 7000) && ((ang_01 - cur_ang) > 0) && ((ang_02 - cur_ang) > 0))
+    while ((eltime < 6000) && ((ang_01 - cur_ang) > 0) && ((ang_02 - cur_ang) > 0))
     {
         cur_ang = cur_ang + mov;
         if (Yt < newtons - .02 * newtons)
@@ -267,7 +255,7 @@ void stim(int newtons)
 void SerialEventWrite(byte rec)
 {
     // 200 gramos
-    if (rec == 0x0D)
+    if (rec == 0x0D) //
     {
         zerotare();
         ten = 0;
@@ -311,7 +299,7 @@ void SerialEventWrite(byte rec)
     }
     else if (rec == 0x04)
     {
-        stim_right(600);
+        stim(600);
         distend();
     }
 }
