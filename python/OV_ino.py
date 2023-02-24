@@ -5,9 +5,12 @@ import serial
 class MyOVBox(OVBox):
    def __init__(self):
       OVBox.__init__(self)
+      self.Port = 'COM1'
 
    def initialize(self):
-      self.arduino=serial.Serial('COM15',baudrate=500000)
+      self.Port = str(self.setting['Port'])
+      self.arduino=serial.Serial(self.Port,baudrate=500000)
+      print(self.arduino)
       return
 
    def process(self):
