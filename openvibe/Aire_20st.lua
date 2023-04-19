@@ -1,35 +1,143 @@
 -- this function is called when the box is initialized
 function initialize(box)
-	io.write("initialize has been called\n");
 	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
-
 end
-
-local aire 			= {33028, 33029, 33030, 33031}
-local stim_length 	= 1				--duration of stimulation
-local stim_rest_length 	= 3 			--duration of stimulation (3) and resting (5)
-local st 		    = 20				--number of stimuli
-local stop_air 		=  33043
-local t_lag			= 20
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
-	io.write("uninitialize has been called\n")
+	io.write("uninitialize has been calle d\n")
 end
 
 function process(box)
-	io.write("process has been called\n")
-         
-		n=3
-		for i=1, st, 1 do
-		box:send_stimulation(1, aire[n], t_lag + (i-1)*stim_rest_length, 0)		--Start stimuli
-		box:send_stimulation(1, stop_air, t_lag + (i-1)*stim_rest_length+stim_length, 0) 	--Stop stimuli
-		box:log("Info", string.format('%i at %i', aire[n], t_lag + (i-1)*stim_rest_length))
-		box:log("Info", string.format('%i at %i', stop_air, t_lag + (i-1)*stim_rest_length+stim_length))
-		end
 
-		box:send_stimulation(1,32770, t_lag + (st*8)+stim_length, 0)   --mandar estimulo para terminar
+	local aire 			= {33028, 33029, 33030, 33031}
+	local stop_air 		=  33043
+
+	io.write("process has been called\n")
+	n=3
+	box:send_stimulation(1,33084,2,0) --Start LSL communication 
+	box:send_stimulation(1, aire[n], 27.35844, 0)
+box:send_stimulation(1, aire[n], 36.58103, 0)
+box:send_stimulation(1, aire[n], 43.07514, 0)
+box:send_stimulation(1, aire[n], 51.64992, 0)
+box:send_stimulation(1, aire[n], 59.86243, 0)
+box:send_stimulation(1, aire[n], 66.99064, 0)
+box:send_stimulation(1, aire[n], 74.70158, 0)
+box:send_stimulation(1, aire[n], 82.92999, 0)
+box:send_stimulation(1, aire[n], 93.31559, 0)
+box:send_stimulation(1, aire[n], 103.1619, 0)
+box:send_stimulation(1, aire[n], 110.262, 0)
+box:send_stimulation(1, aire[n], 120.2852, 0)
+box:send_stimulation(1, aire[n], 128.7688, 0)
+box:send_stimulation(1, aire[n], 136.7268, 0)
+box:send_stimulation(1, aire[n], 145.2033, 0)
+box:send_stimulation(1, aire[n], 153.0667, 0)
+box:send_stimulation(1, aire[n], 160.9839, 0)
+box:send_stimulation(1, aire[n], 169.977, 0)
+box:send_stimulation(1, aire[n], 178.9164, 0)
+box:send_stimulation(1, aire[n], 187.8612, 0)
+box:send_stimulation(1, aire[n], 196.3088, 0)
+box:send_stimulation(1, aire[n], 203.5039, 0)
+box:send_stimulation(1, aire[n], 211.982, 0)
+box:send_stimulation(1, aire[n], 221.0688, 0)
+box:send_stimulation(1, aire[n], 229.3948, 0)
+box:send_stimulation(1, aire[n], 238.0846, 0)
+box:send_stimulation(1, aire[n], 246.5691, 0)
+box:send_stimulation(1, aire[n], 254.3669, 0)
+box:send_stimulation(1, aire[n], 262.5628, 0)
+box:send_stimulation(1, aire[n], 270.0379, 0)
+box:send_stimulation(1, aire[n], 278.6302, 0)
+box:send_stimulation(1, aire[n], 285.8655, 0)
+box:send_stimulation(1, aire[n], 293.1529, 0)
+box:send_stimulation(1, aire[n], 300.6132, 0)
+box:send_stimulation(1, aire[n], 306.6504, 0)
+box:send_stimulation(1, aire[n], 315.6093, 0)
+box:send_stimulation(1, aire[n], 323.8261, 0)
+box:send_stimulation(1, aire[n], 331.3228, 0)
+box:send_stimulation(1, aire[n], 340.2363, 0)
+box:send_stimulation(1, aire[n], 347.0953, 0)
+box:send_stimulation(1, aire[n], 355.0271, 0)
+box:send_stimulation(1, aire[n], 362.8662, 0)
+box:send_stimulation(1, aire[n], 371.079, 0)
+box:send_stimulation(1, aire[n], 379.2876, 0)
+box:send_stimulation(1, aire[n], 386.711, 0)
+box:send_stimulation(1, aire[n], 394.6909, 0)
+box:send_stimulation(1, aire[n], 402.581, 0)
+box:send_stimulation(1, aire[n], 410.9995, 0)
+box:send_stimulation(1, aire[n], 419.7283, 0)
+box:send_stimulation(1, aire[n], 428.4679, 0)
+box:send_stimulation(1, aire[n], 435.8921, 0)
+box:send_stimulation(1, aire[n], 443.9437, 0)
+box:send_stimulation(1, aire[n], 451.1342, 0)
+box:send_stimulation(1, aire[n], 458.3919, 0)
+box:send_stimulation(1, aire[n], 466.3873, 0)
+box:send_stimulation(1, aire[n], 475.4091, 0)
+box:send_stimulation(1, aire[n], 482.896, 0)
+box:send_stimulation(1, aire[n], 491.1436, 0)
+box:send_stimulation(1, aire[n], 498.9932, 0)
+box:send_stimulation(1, aire[n], 507.7381, 0)
+box:send_stimulation(1, stop_air, 28.35844, 0)
+box:send_stimulation(1, stop_air, 37.58103, 0)
+box:send_stimulation(1, stop_air, 44.07514, 0)
+box:send_stimulation(1, stop_air, 52.64992, 0)
+box:send_stimulation(1, stop_air, 60.86243, 0)
+box:send_stimulation(1, stop_air, 67.99064, 0)
+box:send_stimulation(1, stop_air, 75.70158, 0)
+box:send_stimulation(1, stop_air, 83.92999, 0)
+box:send_stimulation(1, stop_air, 94.31559, 0)
+box:send_stimulation(1, stop_air, 104.1619, 0)
+box:send_stimulation(1, stop_air, 111.262, 0)
+box:send_stimulation(1, stop_air, 121.2852, 0)
+box:send_stimulation(1, stop_air, 129.7688, 0)
+box:send_stimulation(1, stop_air, 137.7268, 0)
+box:send_stimulation(1, stop_air, 146.2033, 0)
+box:send_stimulation(1, stop_air, 154.0667, 0)
+box:send_stimulation(1, stop_air, 161.9839, 0)
+box:send_stimulation(1, stop_air, 170.977, 0)
+box:send_stimulation(1, stop_air, 179.9164, 0)
+box:send_stimulation(1, stop_air, 188.8612, 0)
+box:send_stimulation(1, stop_air, 197.3088, 0)
+box:send_stimulation(1, stop_air, 204.5039, 0)
+box:send_stimulation(1, stop_air, 212.982, 0)
+box:send_stimulation(1, stop_air, 222.0688, 0)
+box:send_stimulation(1, stop_air, 230.3948, 0)
+box:send_stimulation(1, stop_air, 239.0846, 0)
+box:send_stimulation(1, stop_air, 247.5691, 0)
+box:send_stimulation(1, stop_air, 255.3669, 0)
+box:send_stimulation(1, stop_air, 263.5628, 0)
+box:send_stimulation(1, stop_air, 271.0379, 0)
+box:send_stimulation(1, stop_air, 279.6302, 0)
+box:send_stimulation(1, stop_air, 286.8655, 0)
+box:send_stimulation(1, stop_air, 294.1529, 0)
+box:send_stimulation(1, stop_air, 301.6132, 0)
+box:send_stimulation(1, stop_air, 307.6504, 0)
+box:send_stimulation(1, stop_air, 316.6093, 0)
+box:send_stimulation(1, stop_air, 324.8261, 0)
+box:send_stimulation(1, stop_air, 332.3228, 0)
+box:send_stimulation(1, stop_air, 341.2363, 0)
+box:send_stimulation(1, stop_air, 348.0953, 0)
+box:send_stimulation(1, stop_air, 356.0271, 0)
+box:send_stimulation(1, stop_air, 363.8662, 0)
+box:send_stimulation(1, stop_air, 372.079, 0)
+box:send_stimulation(1, stop_air, 380.2876, 0)
+box:send_stimulation(1, stop_air, 387.711, 0)
+box:send_stimulation(1, stop_air, 395.6909, 0)
+box:send_stimulation(1, stop_air, 403.581, 0)
+box:send_stimulation(1, stop_air, 411.9995, 0)
+box:send_stimulation(1, stop_air, 420.7283, 0)
+box:send_stimulation(1, stop_air, 429.4679, 0)
+box:send_stimulation(1, stop_air, 436.8921, 0)
+box:send_stimulation(1, stop_air, 444.9437, 0)
+box:send_stimulation(1, stop_air, 452.1342, 0)
+box:send_stimulation(1, stop_air, 459.3919, 0)
+box:send_stimulation(1, stop_air, 467.3873, 0)
+box:send_stimulation(1, stop_air, 476.4091, 0)
+box:send_stimulation(1, stop_air, 483.896, 0)
+box:send_stimulation(1, stop_air, 492.1436, 0)
+box:send_stimulation(1, stop_air, 499.9932, 0)
+box:send_stimulation(1, stop_air, 508.7381, 0)
+
+	box:send_stimulation(1, 32770, 470, 0)   -- End stimuli
 	
-	-- releases cpu
 	box:sleep()
 end

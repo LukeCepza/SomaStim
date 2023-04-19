@@ -3,37 +3,46 @@ from pylsl import StreamInlet, resolve_bypred, StreamInfo, StreamOutlet
 import time
 import serial
 
-ArduinoCOM = str(sys.argv)
+if len(sys.argv) > 1:
+    ArduinoCOM = sys.argv[1]
+else:
+    ArduinoCOM = 'COM3'
+# Connect thorugh serial to arduino
+arduinoCOM = False
+while (not arduinoCOM): #Repeat until successful connection #Try if len(ArduinoCOM == 0)
+    try:
+        print("Attempting connection to Arduino.")
+        arduino=serial.Serial(ArduinoCOM,baudrate=500000)
+        arduino.close()
+        print("Connection successful.")
+        arduinoCOM = True
 
-lastTime=0
+    except Exception as e:
+        print("Attempting again in 2s")
+        time.sleep(2)
 
-
-
-try:
-    print("Attempting connection to Arduino")
-    arduino=serial.Serial('COM3',baudrate=500000)
-except Exception as e:
-    print(e)
-    print("Unrecognized port")
-
-try:
-    arduino.close()
-except:
-    print("Closing aruino instance")
-
+# Open serial communication thorugh serial to arduino
 try:
     arduino.open()
+    print("Arduino communication port opened.")
+
+
 except Exception as e:
     print(e)
-    print("Could not oppen port or already in use")
+    print("Could not open port or alreaady in use.")
+    
+time.sleep(3)
+arduino.write(str(b'33083').encode('utf-8'))
+time.sleep(3)
 
-print("Looking for OpenVibe Marker Stream...")
-streams = resolve_bypred('name', 'openvibeMarkers',timeout=1)
+# Lookup for OpenVibe Marker data Stream
+print("Looking for OpenVibe Marker Stream ...")
+streams = resolve_bypred('name', 'openvibeMarkers',timeout=1,)
 while(len(streams) == 0):
     print("OpenVibe Connection failed. Attempting again ...")
     time.sleep(2)  
     streams = resolve_bypred('name', 'openvibeMarkers',timeout=1)
-      
+    
 print("OpenVibe Connection Stablished :D")
 
 inlet = StreamInlet(streams[0])
@@ -50,10 +59,12 @@ while True:
 
     if marker == 32770:
         print('Program finished. Closing Arduino port')
-        print('Closing Arduino port')
         try:
             arduino.close()
+            exit()
         except:
             print("Port closed already") 
             exit()
         break
+
+
