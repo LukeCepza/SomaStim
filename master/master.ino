@@ -33,7 +33,7 @@ void setup() {
     lcd.print("not responding! ");
     lcd.setCursor(0, 1);
     lcd.print("Radio hardware  ");
-    delay(200);
+    delay(20);
     while (1) {} // hold in infinite loop
   }
   // Set the PA Level low to try preventing power supply related problems
@@ -49,7 +49,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(100);
+  delay(5);
   payload = SerialEvent();
   radio.stopListening();
   if (payload == 0xFA) {
@@ -71,7 +71,7 @@ void loop() {
       Serial.print(end_timer - start_timer);                 // print the timer result
       Serial.print(F(" us. Sent: "));
       Serial.println( );                               // print payload sent
-      delay(500);
+      delay(5);
       lcd.setRGB(0, 250, 0);
       lcd.setCursor(0, 1);
       lcd.print("   Successful   ");
@@ -91,7 +91,10 @@ byte SerialEvent() {
   String Fmar = "";
   while (Serial.available()) {
     char markers = Serial.read();
+    Serial.println(markers);
     Fmar += markers;
+    Serial.println(Fmar);
+
   }
   //Caress protocol -TENSE
   if (Fmar.indexOf("33036") >= 0) {

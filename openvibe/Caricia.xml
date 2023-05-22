@@ -1,7 +1,7 @@
 <OpenViBE-Scenario>
 	<FormatVersion>2</FormatVersion>
 	<Creator>OpenViBE Designer</Creator>
-	<CreatorVersion>3.3.1</CreatorVersion>
+	<CreatorVersion>3.0.0</CreatorVersion>
 	<Settings></Settings>
 	<Inputs></Inputs>
 	<Outputs></Outputs>
@@ -28,7 +28,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>D:/Neuro/SomaStim/openvibe/Caricia.lua</Value>
+					<Value>D:/sharegit/SomaStim/openvibe/Caricia_20st.lua</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 			</Settings>

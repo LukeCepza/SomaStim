@@ -16,15 +16,13 @@ uint8_t address[][6] = {"M2T", "M2A", "M2V"};
 byte payload = 0x00;  
 
 // Variables
-// byte payload = 0x00;
-int lvl   =0;
-int motor =5;
+int motor =2;
 // Create instance of Haptic motor
 SFE_HMD_DRV2605L HMD; //Create haptic motor driver object 
 
-uint8_t rtpn[4] = {63,127,191,255};    //levels of intensity for the motors
+uint8_t rtpn[4] = {16,32,64,128};    //levels of intensity for the motors
 int ln          = 4;
-byte incr       = 0x05;     //intensidad incrementa de 5 and 5
+byte incr       = 0x01;     //intensidad incrementa de 5 and 5
   //intensidad comienza en 0
 byte max              = 0xFF;
 int tshold,x, numths  = 0;
@@ -35,13 +33,13 @@ void setup() {
   HMD.begin();
   Serial.begin(500000);
   
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
 
   HMD.begin();
   HMD.Mode(0x05);            // Internal trigger input mode -- Must use the GO() function to trigger playback.
-  HMD.MotorSelect(0x36);     // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)
+  HMD.MotorSelect(0b00110110);     // 1: LRA Mode ; 011: 4x Braking factor; 01: Medium (default) loop gain ; 10 : 15x (default)  
   HMD.Library(2);            // 1-5 & 7 for ERM motors, 6 for LRA motors
   delay(10);         
 
@@ -81,7 +79,7 @@ void loop() {
     HMD.RTP(thold);
     thold = thold+incr;
     Serial.println(thold);
-    delay(1000);  }
+    delay(500);  }
 }
 
 void SerialEventWrite(byte rec){
@@ -95,14 +93,14 @@ void SerialEventWrite(byte rec){
     ths = true;
       //funciรณn abajo
     Serial.println("Thrs Ready");
-    digitalWrite (5,HIGH);
+    digitalWrite (2,HIGH);
   }
   if (ths== true){
     if (rec == 0x12){
       HMD.RTP(0x00);
       numths++;
       Serial.println("Thr FINAL");
-      digitalWrite (5,LOW);
+      digitalWrite (2,LOW);
       x = x+thold;
       thold = 0;
       ths = false; 
@@ -137,7 +135,9 @@ void SerialEventWrite(byte rec){
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[0]);
-       HMD.RTP(rtpn[(lvl)]);
+       HMD.RTP(100);
+       delayMicroseconds(1000);
+       HMD.RTP(rtpn[(0)]);
        digitalWrite (motor,HIGH);
       }
      if(rec==0x0A) {           // label/code 33033
@@ -146,7 +146,9 @@ void SerialEventWrite(byte rec){
        Serial.println("Intensidad: ");
        Serial.println(rtpn[1]);
        digitalWrite (motor,HIGH);       
-       HMD.RTP(rtpn[(lvl+1)]);
+       HMD.RTP(100);
+       delayMicroseconds(1000);
+       HMD.RTP(rtpn[(1)]);
 
       }
      if(rec==0x0B) {           // label/code 33034
@@ -154,15 +156,19 @@ void SerialEventWrite(byte rec){
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[2]);
-       HMD.RTP(rtpn[(lvl+2)]);
-       digitalWrite (motor,HIGH);
+       HMD.RTP(100);
+       delayMicroseconds(1000);
+       HMD.RTP(rtpn[(2)]);
+       digital Write (motor,HIGH);
       } 
      if(rec==0x0C){            // label/code 33035
        Serial.println("label 33035");
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[3]);
-       HMD.RTP(rtpn[(lvl+3)]);
+       HMD.RTP(100);
+       delayMicroseconds(1000);
+       HMD.RTP(rtpn[(3)]);
        digitalWrite (motor,HIGH);
       }
      
@@ -172,11 +178,11 @@ void SerialEventWrite(byte rec){
        digitalWrite (motor,LOW);
       //avoid changing motors when validation is done
       if(vld == false){
-        if (motor < 7){ //increase by one the motor, change to other
+        if (motor < 5){ //increase by one the motor, change to other
           motor++;
           delay(10);
          } else { //if all three motors were used, restart from zero
-           motor = 5;
+           motor = 2;
          }
         }
      }
@@ -186,7 +192,7 @@ void SerialEventWrite(byte rec){
       Serial.println("EXPERIMENT FINISHED");
       digitalWrite (motor,LOW);
       vld = false;
-      motor = 5;
+      motor = 2;
      }
   } // else
 } // serialeventwrite

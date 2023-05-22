@@ -7,7 +7,7 @@ end
 
 local stim_rest_length = 11.5 --duration of resting + stimulation : 11.5
 local tense_length = stim_rest_length - 4.5 -- 7
-local stim_length = stim_rest_length- tense_length --duration of stimulation : 1.5
+local stim_length = stim_rest_length - tense_length --duration of stimulation : 1.5
 
 local caricia 		= {33024, 33025, 33026, 33027}
 local caricia_tense 	= {33036, 33037, 33038, 33039}
