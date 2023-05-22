@@ -107,6 +107,8 @@ void SerialEventWrite(byte rec){
   //else, then ths is false, so the STOP label received will affect the stimuli actions
     if(rec==0x05) {           // label/code 33024
      //analogWrite (fan, tshold);    // 1/4 of intensity
+     analogWrite(fan,191);
+     delayMicroseconds(1000);
      analogWrite(fan,fz[0]);
      Serial.println("Intensidad: ");
      //Serial.println(tshold);
@@ -114,6 +116,8 @@ void SerialEventWrite(byte rec){
      }
     if(rec==0x06) {           // label/code 33025
       //analogWrite (fan, tshold + pz);    // 2/4 of intensity
+      analogWrite(fan,191);
+      delayMicroseconds(1000);
       analogWrite (fan, fz[1]);    // 2/4 of intensity
       Serial.println("Intensidad: ");
       //Serial.println(tshold + pz);
