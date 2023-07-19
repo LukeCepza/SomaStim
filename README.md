@@ -1,4 +1,4 @@
-### Repository of NeuroSense Somatosensory stimulatiuon devices. 
+### Repository of NeuroSense Somatosensory Stimulation Devices. 
 Folders are arranged in Four parts: \
  &nbsp;&nbsp;&nbsp;&nbsp;   1. Electronics Diagrams \
  &nbsp;&nbsp;&nbsp;&nbsp;   2. Firmware \
