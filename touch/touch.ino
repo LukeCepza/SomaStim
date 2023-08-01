@@ -30,7 +30,7 @@ double elTime;               // compute time elapsed from previous computation
 #define SERVO_02 0x02             // ID of which we will set Dynamixel too
 #define SERVO_ControlPin 0x02     // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
 #define SERVO_SET_Baudrate 500000 // Baud rate speed which the Dynamixel will be set too (57600)
-#define CW_LIMIT_ANGLE 0x000      // lowest clockwise angle is 1, as when set to 0 it set servo to wheel mode
+#define CW_LIMIT_ANGLE 0x001      // lowest clockwise angle is 1, as when set to 0 it set servo to wheel mode
 #define CCW_LIMIT_ANGLE 0x3FF     // Highest anit-clockwise angle is 0XFFF, as when set to 0 it set servo to wheel mode
 
 //--------------Strain Gauge--------------//

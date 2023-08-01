@@ -20,7 +20,7 @@ int motor =2;
 // Create instance of Haptic motor
 SFE_HMD_DRV2605L HMD; //Create haptic motor driver object 
 
-uint8_t rtpn[4] = {16,32,64,128};    //levels of intensity for the motors
+uint8_t rtpn[4] = {24,32,64,128};    //levels of intensity for the motors
 int ln          = 4;
 byte incr       = 0x01;     //intensidad incrementa de 5 and 5
   //intensidad comienza en 0
@@ -135,17 +135,21 @@ void SerialEventWrite(byte rec){
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[0]);
-       HMD.RTP(100);
-       delayMicroseconds(1000);
-       HMD.RTP(rtpn[(0)]);
        digitalWrite (motor,HIGH);
+       digitalWrite (3,HIGH);
+       HMD.RTP(50);
+       delayMicroseconds(10000);
+       HMD.RTP(rtpn[(0)]);
+
+
       }
      if(rec==0x0A) {           // label/code 33033
        Serial.println("label 33033");
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[1]);
-       digitalWrite (motor,HIGH);       
+       digitalWrite (motor,HIGH);    
+       digitalWrite (3,HIGH);
        HMD.RTP(100);
        delayMicroseconds(1000);
        HMD.RTP(rtpn[(1)]);
@@ -156,20 +160,24 @@ void SerialEventWrite(byte rec){
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[2]);
+       digitalWrite (motor,HIGH);
+       digitalWrite (3,HIGH);
        HMD.RTP(100);
        delayMicroseconds(1000);
        HMD.RTP(rtpn[(2)]);
-       digital Write (motor,HIGH);
+
+
       } 
      if(rec==0x0C){            // label/code 33035
        Serial.println("label 33035");
        Serial.println(motor);
        Serial.println("Intensidad: ");
        Serial.println(rtpn[3]);
+       digitalWrite (motor,HIGH);
+       digitalWrite (3,HIGH);
        HMD.RTP(100);
        delayMicroseconds(1000);
        HMD.RTP(rtpn[(3)]);
-       digitalWrite (motor,HIGH);
       }
      
      if(rec ==0x13){

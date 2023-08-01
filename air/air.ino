@@ -20,7 +20,7 @@ uint8_t thold =0x00;
 bool ths = false;
 //int numths = 0;
 int ln = 4;       // nÃºmero de partes a divir
-uint8_t fz[4] = {63,127,191,255};    //levels of intensity for the motors
+uint8_t fz[4] = {80,130,190,250};    //levels of intensity for the motors
 
 
 void setup() {

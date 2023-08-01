@@ -57,7 +57,7 @@ while True:
         print("Sent ", data, "; Marker is ", data)
         time.sleep(0.01)
 
-    if marker == 32770: #Label to close program.
+    if marker[0] == 32770: #Label to close program.
         print('Program finished. Closing Arduino port')
         try:
             arduino.close()

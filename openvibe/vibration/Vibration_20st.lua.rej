@@ -1,0 +1,13 @@
+diff a/openvibe/Vibration_20st.lua b/openvibe/Vibration_20st.lua	(rejected hunks)
+@@ -1,9 +1,8 @@
+ -- this function is called when the box is initialized
+ function initialize(box)
+ 	io.write("initialize has been called\n");
+-	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") --for Kevin's pc
+-	--dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") --for Erick's pc
+-
++	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") 
++	
+ end
+ 
+ local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
