@@ -1,145 +1,36 @@
 -- this function is called when the box is initialized
 function initialize(box)
-	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
+	io.write("initialize has been called\n");
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua") 
 end
+
+local vibracion 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
+local stim_length 	= 0.5				--duration of stimulation
+local stim_rest_length 	= 4 				--duration of stimulation (3) and resting (5)
+local st 		= 40				--number of stimuli
+local stop_vib 		= 33042
+local t_lag			= 20
+local valid        = 33041                --flag to start the validation
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
-	io.write("uninitialize has been calle d\n")
+	io.write("uninitialize has been called\n")
 end
 
 function process(box)
+	io.write("process has been called\n")
+	box:send_stimulation(1, valid, 15, 0)        --start validation process   
+	box:log("Info", string.format('%i at %i', valid, 5))
+         
+		n=3
+		for i=1, st, 1 do
+		box:send_stimulation(1, vibracion[n], t_lag + (i-1)*stim_rest_length, 0)		--Start stimuli
+		box:send_stimulation(1, stop_vib, t_lag + (i-1)*stim_rest_length+stim_length, 0) 	--Stop stimuli
+		box:log("Info", string.format('%i at %i', vibracion[n], t_lag + (i-1)*stim_rest_length))
+		box:log("Info", string.format('%i at %i', stop_vib, t_lag + (i-1)*stim_rest_length+stim_length))
+		end
 
-	local vib 	= {33032, 33033, 33034, 33035}	--tags corresponding to vibration
-	local stop_vib 		= 33042
-	local valid        = 33041                --flag to start the validation
-	box:send_stimulation(1,33084,2,0) --Start Lvalidation SL communication 
-	box:send_stimulation(1,33041,20,0) --Start LSL communication 
-
-n = 1
-
-box:send_stimulation(1, vib[n], 24.53767, 0)
-box:send_stimulation(1, vib[n], 30.57155, 0)
-box:send_stimulation(1, vib[n], 32.51271, 0)
-box:send_stimulation(1, vib[n], 37.57488, 0)
-box:send_stimulation(1, vib[n], 42.09364, 0)
-box:send_stimulation(1, vib[n], 44.98596, 0)
-box:send_stimulation(1, vib[n], 48.75236, 0)
-box:send_stimulation(1, vib[n], 53.29499, 0)
-box:send_stimulation(1, vib[n], 61.07338, 0)
-box:send_stimulation(1, vib[n], 68.04282, 0)
-box:send_stimulation(1, vib[n], 70.89294, 0)
-box:send_stimulation(1, vib[n], 78.12786, 0)
-box:send_stimulation(1, vib[n], 83.05326, 0)
-box:send_stimulation(1, vib[n], 87.19021, 0)
-box:send_stimulation(1, vib[n], 92.10495, 0)
-box:send_stimulation(1, vib[n], 96.09998, 0)
-box:send_stimulation(1, vib[n], 100.1758, 0)
-box:send_stimulation(1, vib[n], 105.8655, 0)
-box:send_stimulation(1, vib[n], 111.4746, 0)
-box:send_stimulation(1, vib[n], 117.0918, 0)
-box:send_stimulation(1, vib[n], 121.9633, 0)
-box:send_stimulation(1, vib[n], 124.9558, 0)
-box:send_stimulation(1, vib[n], 129.873, 0)
-box:send_stimulation(1, vib[n], 135.7032, 0)
-box:send_stimulation(1, vib[n], 140.3921, 0)
-box:send_stimulation(1, vib[n], 145.6268, 0)
-box:send_stimulation(1, vib[n], 150.5537, 0)
-box:send_stimulation(1, vib[n], 154.4503, 0)
-box:send_stimulation(1, vib[n], 158.9442, 0)
-box:send_stimulation(1, vib[n], 162.3569, 0)
-box:send_stimulation(1, vib[n], 167.4453, 0)
-box:send_stimulation(1, vib[n], 170.4982, 0)
-box:send_stimulation(1, vib[n], 173.6293, 0)
-box:send_stimulation(1, vib[n], 177.0198, 0)
-box:send_stimulation(1, vib[n], 178.2755, 0)
-box:send_stimulation(1, vib[n], 183.9139, 0)
-box:send_stimulation(1, vib[n], 188.4391, 0)
-box:send_stimulation(1, vib[n], 191.8842, 0)
-box:send_stimulation(1, vib[n], 197.4545, 0)
-box:send_stimulation(1, vib[n], 199.943, 0)
-box:send_stimulation(1, vib[n], 204.0407, 0)
-box:send_stimulation(1, vib[n], 207.9993, 0)
-box:send_stimulation(1, vib[n], 212.5185, 0)
-box:send_stimulation(1, vib[n], 217.0313, 0)
-box:send_stimulation(1, vib[n], 220.3665, 0)
-box:send_stimulation(1, vib[n], 224.5364, 0)
-box:send_stimulation(1, vib[n], 228.5715, 0)
-box:send_stimulation(1, vib[n], 233.3992, 0)
-box:send_stimulation(1, vib[n], 238.6925, 0)
-box:send_stimulation(1, vib[n], 244.0018, 0)
-box:send_stimulation(1, vib[n], 247.3381, 0)
-box:send_stimulation(1, vib[n], 251.6155, 0)
-box:send_stimulation(1, vib[n], 254.6014, 0)
-box:send_stimulation(1, vib[n], 257.6879, 0)
-box:send_stimulation(1, vib[n], 261.881, 0)
-box:send_stimulation(1, vib[n], 267.6136, 0)
-box:send_stimulation(1, vib[n], 271.044, 0)
-box:send_stimulation(1, vib[n], 275.6154, 0)
-box:send_stimulation(1, vib[n], 279.5898, 0)
-box:send_stimulation(1, vib[n], 284.9071, 0)
-box:send_stimulation(1, stop_vib, 24.73767, 0)
-box:send_stimulation(1, stop_vib, 30.77155, 0)
-box:send_stimulation(1, stop_vib, 32.71271, 0)
-box:send_stimulation(1, stop_vib, 37.77488, 0)
-box:send_stimulation(1, stop_vib, 42.29364, 0)
-box:send_stimulation(1, stop_vib, 45.18596, 0)
-box:send_stimulation(1, stop_vib, 48.95236, 0)
-box:send_stimulation(1, stop_vib, 53.49499, 0)
-box:send_stimulation(1, stop_vib, 61.27338, 0)
-box:send_stimulation(1, stop_vib, 68.24282, 0)
-box:send_stimulation(1, stop_vib, 71.09294, 0)
-box:send_stimulation(1, stop_vib, 78.32786, 0)
-box:send_stimulation(1, stop_vib, 83.25326, 0)
-box:send_stimulation(1, stop_vib, 87.39021, 0)
-box:send_stimulation(1, stop_vib, 92.30495, 0)
-box:send_stimulation(1, stop_vib, 96.29998, 0)
-box:send_stimulation(1, stop_vib, 100.3758, 0)
-box:send_stimulation(1, stop_vib, 106.0655, 0)
-box:send_stimulation(1, stop_vib, 111.6746, 0)
-box:send_stimulation(1, stop_vib, 117.2918, 0)
-box:send_stimulation(1, stop_vib, 122.1633, 0)
-box:send_stimulation(1, stop_vib, 125.1558, 0)
-box:send_stimulation(1, stop_vib, 130.073, 0)
-box:send_stimulation(1, stop_vib, 135.9032, 0)
-box:send_stimulation(1, stop_vib, 140.5921, 0)
-box:send_stimulation(1, stop_vib, 145.8268, 0)
-box:send_stimulation(1, stop_vib, 150.7537, 0)
-box:send_stimulation(1, stop_vib, 154.6503, 0)
-box:send_stimulation(1, stop_vib, 159.1442, 0)
-box:send_stimulation(1, stop_vib, 162.5569, 0)
-box:send_stimulation(1, stop_vib, 167.6453, 0)
-box:send_stimulation(1, stop_vib, 170.6982, 0)
-box:send_stimulation(1, stop_vib, 173.8293, 0)
-box:send_stimulation(1, stop_vib, 177.2198, 0)
-box:send_stimulation(1, stop_vib, 178.4755, 0)
-box:send_stimulation(1, stop_vib, 184.1139, 0)
-box:send_stimulation(1, stop_vib, 188.6391, 0)
-box:send_stimulation(1, stop_vib, 192.0842, 0)
-box:send_stimulation(1, stop_vib, 197.6545, 0)
-box:send_stimulation(1, stop_vib, 200.143, 0)
-box:send_stimulation(1, stop_vib, 204.2407, 0)
-box:send_stimulation(1, stop_vib, 208.1993, 0)
-box:send_stimulation(1, stop_vib, 212.7185, 0)
-box:send_stimulation(1, stop_vib, 217.2313, 0)
-box:send_stimulation(1, stop_vib, 220.5665, 0)
-box:send_stimulation(1, stop_vib, 224.7364, 0)
-box:send_stimulation(1, stop_vib, 228.7715, 0)
-box:send_stimulation(1, stop_vib, 233.5992, 0)
-box:send_stimulation(1, stop_vib, 238.8925, 0)
-box:send_stimulation(1, stop_vib, 244.2018, 0)
-box:send_stimulation(1, stop_vib, 247.5381, 0)
-box:send_stimulation(1, stop_vib, 251.8155, 0)
-box:send_stimulation(1, stop_vib, 254.8014, 0)
-box:send_stimulation(1, stop_vib, 257.8879, 0)
-box:send_stimulation(1, stop_vib, 262.081, 0)
-box:send_stimulation(1, stop_vib, 267.8136, 0)
-box:send_stimulation(1, stop_vib, 271.244, 0)
-box:send_stimulation(1, stop_vib, 275.8154, 0)
-box:send_stimulation(1, stop_vib, 279.7898, 0)
-box:send_stimulation(1, stop_vib, 285.1071, 0)
-
-
+		box:send_stimulation(1,32770, t_lag + (st*8)+stim_length, 0)   --mandar estimulo para terminar
 	
 	-- releases cpu
 	box:sleep()
