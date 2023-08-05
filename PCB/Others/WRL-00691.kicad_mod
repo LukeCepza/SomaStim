@@ -1,0 +1,41 @@
+(footprint "WRL-00691" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 0)
+  (attr through_hole)
+  (fp_text reference "REF**" (at -2.54 -5.54 unlocked) (layer "F.SilkS")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 0bd2bc9d-cff1-4a2e-982f-3bd726236685)
+  )
+  (fp_text value "WRL-00691" (at -2.54 -4.04 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 84dd88da-a44f-46cc-be01-23e6628c8a9c)
+  )
+  (fp_text user "${REFERENCE}" (at -2.54 -2.54 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp ca395794-e7f9-4c3f-8af0-0e5f54e14b89)
+  )
+  (fp_rect (start 7.267204 -0.784892) (end 9.267204 18.853208) (layer "F.SilkS") (width 0.12) (fill none) (tstamp 9bb4f268-2b87-46b6-ae48-f9f765761e28))
+  (fp_rect (start -13.138491 -0.930874) (end 9.861509 19.069126) (layer "F.SilkS") (width 0.12) (fill none) (tstamp e8a700da-1286-43e8-8e69-af458fc63a3e))
+  (pad "1" thru_hole roundrect (at 8.274849 0.163245) (size 1.6 1.7) (drill 1) (layers *.Cu *.Mask) (roundrect_rratio 0.25) (tstamp 16776a29-c637-4d97-9f6e-e51e03afae6b))
+  (pad "2" thru_hole circle (at 8.274849 2.703245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 3e61cb36-3603-41d3-bb3b-03271eef3ece))
+  (pad "3" thru_hole circle (at 8.274849 5.243245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 15d34d11-4f63-45e8-b1ca-d6481fe874b8))
+  (pad "4" thru_hole circle (at 8.274849 7.783245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 8239a984-f69a-41a3-a120-3752e27cbb2b))
+  (pad "5" thru_hole circle (at 8.274849 10.323245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 6fa06587-f287-4f08-af64-73427d92e66a))
+  (pad "6" thru_hole circle (at 8.274849 12.863245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp d1f8ff3d-9d43-454e-883b-39277d6e4e55))
+  (pad "7" thru_hole circle (at 8.274849 15.403245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 68d6e5d3-2d9f-4453-97d0-78d1f38ded46))
+  (pad "8" thru_hole circle (at 8.274849 17.943245) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 6e0b558b-d059-4110-8098-ce58f53aa586))
+  (group "" (id ce0dba4a-fb66-417b-9f6d-5b8c101016ad)
+    (members
+      15d34d11-4f63-45e8-b1ca-d6481fe874b8
+      16776a29-c637-4d97-9f6e-e51e03afae6b
+      3e61cb36-3603-41d3-bb3b-03271eef3ece
+      68d6e5d3-2d9f-4453-97d0-78d1f38ded46
+      6e0b558b-d059-4110-8098-ce58f53aa586
+      6fa06587-f287-4f08-af64-73427d92e66a
+      8239a984-f69a-41a3-a120-3752e27cbb2b
+      9bb4f268-2b87-46b6-ae48-f9f765761e28
+      d1f8ff3d-9d43-454e-883b-39277d6e4e55
+      e8a700da-1286-43e8-8e69-af458fc63a3e
+    )
+  )
+)
