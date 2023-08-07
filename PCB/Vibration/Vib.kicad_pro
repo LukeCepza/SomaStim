@@ -176,6 +176,7 @@
       ],
       "track_widths": [
         0.0,
+        0.3,
         0.5
       ],
       "via_dimensions": [
@@ -464,7 +465,7 @@
       "netlist": "",
       "specctra_dsn": "",
       "step": "",
-      "vrml": ""
+      "vrml": "Vib.wrl"
     },
     "page_layout_descr_file": ""
   },

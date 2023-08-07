@@ -1,0 +1,40 @@
+(footprint "ROB_14538" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 0)
+  (property "Sheetfile" "Vib.kicad_sch")
+  (property "Sheetname" "")
+  (attr through_hole)
+  (fp_text reference "U1" (at 0 -0.5 unlocked) (layer "F.SilkS")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 86a83bbd-4d89-400b-be91-728c83113be5)
+  )
+  (fp_text value "ROB-14538" (at 0 1 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 7805b266-bf4f-4bdf-b913-80189d380a4a)
+  )
+  (fp_text user "${REFERENCE}" (at 0 2.5 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 7972cc14-1fd8-4546-b933-20a197193a19)
+  )
+  (fp_rect (start 0 0) (end 21 20.7) (layer "F.SilkS") (width 0.12) (fill none) (tstamp 55c94114-6a19-4d75-baa2-c25cfa0c017d))
+  (fp_circle (center 17.78 2.54) (end 19.33 2.54) (layer "F.SilkS") (width 0.12) (fill none) (tstamp 9797585a-7d95-4644-8c3e-93782c097180))
+  (fp_circle (center 2.54 2.54) (end 4.09 2.54) (layer "F.SilkS") (width 0.12) (fill none) (tstamp ef4a6679-3621-43e9-959d-befc599803fa))
+  (pad "1" thru_hole circle (at 1.69 5.08) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp a0104493-b87c-4177-b835-9f9dcad2512a))
+  (pad "2" thru_hole circle (at 1.69 7.62) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 7e556cb3-d1e3-407b-8bc2-70e00656bfc7))
+  (pad "3" thru_hole circle (at 1.69 10.16) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 41b227fd-56a3-4a16-ac97-25849a00fe21))
+  (pad "4" thru_hole circle (at 1.69 12.7) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 9c3aa1a7-be88-4b88-879e-31253009c27b))
+  (pad "5" thru_hole circle (at 1.69 15.24) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 7808dced-a89c-4b9d-8bb8-c59f2bf9d278))
+  (pad "6" thru_hole circle (at 1.69 17.78) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp dc35d628-5618-4e82-9085-c2a46d505e80))
+  (pad "7" thru_hole circle (at 19.2 10.162261) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask) (tstamp 40291f2c-7e1b-4296-bc43-e0e2e0befb53))
+  (pad "8" thru_hole circle (at 19.2 12.702261) (size 1.7 1.7) (drill 1.1) (layers *.Cu *.Mask) (tstamp 3aaeb1dc-d86d-437b-b904-37bbb37d079c))
+  (group "" (id 4033bfc9-e7b6-4a15-a836-ac98af4919ba)
+    (members
+      41b227fd-56a3-4a16-ac97-25849a00fe21
+      7808dced-a89c-4b9d-8bb8-c59f2bf9d278
+      7e556cb3-d1e3-407b-8bc2-70e00656bfc7
+      9c3aa1a7-be88-4b88-879e-31253009c27b
+      a0104493-b87c-4177-b835-9f9dcad2512a
+      dc35d628-5618-4e82-9085-c2a46d505e80
+    )
+  )
+)

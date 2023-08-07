@@ -55,7 +55,11 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "lib_footprint_issues|69277381|129704602|64274d33-779f-447c-92ca-ba77354e7ec9|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|49550000|119680000|e897af81-d4c1-4961-83a7-3b198ef851ad|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|90190000|122220000|f07ddee9-92fb-41bb-af88-0c5fc72e6514|00000000-0000-0000-0000-000000000000"
+      ],
       "meta": {
         "version": 2
       },
@@ -87,9 +91,9 @@
         "missing_courtyard": "ignore",
         "missing_footprint": "warning",
         "net_conflict": "warning",
-        "npth_inside_courtyard": "ignore",
+        "npth_inside_courtyard": "warning",
         "padstack": "warning",
-        "pth_inside_courtyard": "ignore",
+        "pth_inside_courtyard": "warning",
         "shorting_items": "error",
         "silk_edge_clearance": "warning",
         "silk_over_copper": "warning",
@@ -174,7 +178,7 @@
       "track_widths": [
         0.0,
         0.0,
-        0.0,
+        0.3,
         0.5
       ],
       "via_dimensions": [
@@ -396,7 +400,7 @@
       "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "similar_labels": "warning",
-      "simulation_model_issue": "error",
+      "simulation_model_issue": "ignore",
       "unannotated": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",

@@ -56,7 +56,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "silk_edge_clearance|64640000|40000000|b2a159e9-c353-4aff-b109-f81718347723|2e88ae1d-3568-4b23-9d44-6276a127773a",
+        "silk_edge_clearance|69720000|40000000|b2a159e9-c353-4aff-b109-f81718347723|c326c318-455f-4719-b8d0-9a8c573f927f",
+        "silk_edge_clearance|77600000|40000000|b2a159e9-c353-4aff-b109-f81718347723|f3e79e50-35ff-4ab7-b364-6498a47f457a",
+        "silk_edge_clearance|82680000|40000000|b2a159e9-c353-4aff-b109-f81718347723|bd28ba38-386c-4840-87eb-c35f8d4c320f"
+      ],
       "meta": {
         "version": 2
       },
@@ -176,8 +181,8 @@
       ],
       "track_widths": [
         0.0,
-        0.5,
-        0.6
+        0.3,
+        0.5
       ],
       "via_dimensions": [
         {
