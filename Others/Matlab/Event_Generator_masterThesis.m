@@ -1,71 +1,61 @@
 rng('default');
-s = rng;
+s = rng(0);
 
-stim_dur_air = 2; %Duracion del estimulo
-srim_rest_air = 2;
-wait_initino = 15; %
+time_init = 15;
+reps1 = 2;
+reps2 = 2;
+reps3 = 2;
 
-%% Air
-posible_combs = perms(["33028","33029","33030","33031"])
-label_stop = "33043"
+stim_air = 2; %Duracion del estimulo
+epoch_dur = 4;
+gepoch_dur = 24;
+
 feedback = "2000"
+pinkNoise = "1999" 
+%% Air
+combs = perms(["33028","33029","33030","33031"]);
+l_stop = "33043";
+
 % Mix rows
-combs_shuffle= posible_combs(randperm(size(posible_combs,1)),:)
+c_shu = posible_combs(randperm(size(combs,1)),:);
 
-epochs_diff = (0:24:480)+15
-times = [0,2, 4,6, 8,10, 12,14, 16]
-
+gep = (0:24:24*reps1)+time_init
 fileID = fopen('Events_KevinThesis.txt','w');
 
-for i = 0:19
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,1)+ "," + num2str(0 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(2 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,2)+ "," + num2str(4 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(6 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,3)+ "," + num2str(8 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(10 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,4)+ "," + num2str(12 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(14 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + feedback + "," + num2str(16 + epochs_diff(i+1)) +",0)");
+for i = 0:reps1
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + pinkNoise +"," + num2str(0 + gep(i+1)) +",0)");    
+    for t = 1:4
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + c_shu(i+1,t)+ "," + num2str(2*t + gep(i+1)) +",0)");
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + l_stop + "," + num2str(2*t+2 + gep(i+1)) +",0)");
+    end
 end
-
 %% Vibration
-posible_combs = perms(["33032","33033","33034","33035"])
-label_stop = "33042"
-feedback = "2000"
+combs = perms(["33032","33033","33034","33035"])
+l_stop = "33042"
 % Mix rows
-combs_shuffle= posible_combs(randperm(size(posible_combs,1)),:)
-epochs_diff = (480:24:960)+15
+c_shu= combs(randperm(size(combs,1)),:)
+gep = (reps1*24):24:((reps1+reps2)*24)+time_init
 
-for i = 0:19
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,1)+ "," + num2str(0 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(2 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,2)+ "," + num2str(4 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(6 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,3)+ "," + num2str(8 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(10 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,4)+ "," + num2str(12 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(14 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + feedback + "," + num2str(16 + epochs_diff(i+1)) +",0)");
+for i = 0:reps2
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + pinkNoise +"," + num2str(0 + gep(i+1)) +",0)");    
+    for t = 1:4
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + c_shu(i+1,t)+ "," + num2str(2*t + gep(i+1)) +",0)");
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + l_stop + "," + num2str(2*t+2 + gep(i+1)) +",0)");
+    end
 end
 
 %% Caress
-posible_combs = perms(["33024","33025","33026","33027"])
-label_stop = "2001"
-feedback = "2000"
+combs = perms(["33024","33025","33026","33027"])
+l_stop = "2001"
 % Mix rows
-combs_shuffle= posible_combs(randperm(size(posible_combs,1)),:)
+c_shu= combs(randperm(size(combs,1)),:)
 
-epochs_diff = (960:24:1440)+15
+gep = (24*(reps2+reps1)):24:24*(reps1+reps2+reps3)+time_init
 
-for i = 0:19
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,1)+ "," + num2str(0 + epochs_diff(i+1)) +",0)");
-    %fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(2 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,2)+ "," + num2str(4 + epochs_diff(i+1)) +",0)");
-    %fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(6 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,3)+ "," + num2str(8 + epochs_diff(i+1)) +",0)");
-    %fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(10 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + combs_shuffle(i+1,4)+ "," + num2str(12 + epochs_diff(i+1)) +",0)");
-    %fprintf(fileID,'%s\n',"box:send_stimulation(1," + label_stop + "," + num2str(14 + epochs_diff(i+1)) +",0)");
-    fprintf(fileID,'%s\n',"box:send_stimulation(1," + feedback + "," + num2str(16 + epochs_diff(i+1)) +",0)");
+for i = 0:reps3
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + pinkNoise +"," + num2str(0 + gep(i+1)) +",0)");    
+    for t = 1:4
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + c_shu(i+1,t)+ "," + num2str(2*t + gep(i+1)) +",0)");
+    fprintf(fileID,'%s\n',"box:send_stimulation(1," + l_stop + "," + num2str(2*t+2 + gep(i+1)) +",0)");
+    end
 end
