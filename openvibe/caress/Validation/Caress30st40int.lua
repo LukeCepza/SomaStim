@@ -4,17 +4,6 @@ function initialize(box)
 	--box:log("Info", string.format('begin'))
 end
 
-local stim_rest_length = 11.5 --duration of resting + stimulation : 11.5
-local tense_length = stim_rest_length - 4.5 -- 7
-local stim_length = stim_rest_length - tense_length --duration of stimulation : 1.5
-
-local caricia 		= {33024, 33025, 33026, 33027}
-local caricia_tense 	= {33036, 33037, 33038, 33039}
---local stop_air 		=  33043
-local st  = 20	-- estimulos
-local t_lag = 20
-
---es el numero de veces que se ha hecho el threshold.
 -- this function is called when the box is uninitialized
 function uninitialize(box)
 	io.write("uninitialize has been calle d\n")
@@ -23,8 +12,16 @@ end
 function process(box)
 	io.write("process has been called\n")
          
-	box:send_stimulation(1, 33084, 2, 0)
+	box:send_stimulation(1, 33084, 2, 0)	--Start LSL communication
+	
+	-- stimuli labels
+	-- 33024, caress 1/4 velocity
+	-- 33025, caress 2/4 velocity
+	-- 33026, caress 3/4 velocity
+	-- 33027, caress 4/4 velocity
+	-- 33043, stop stimulus
 
+-- programming stimuli paradigm in here
 box:send_stimulation(1, 33024, 15, 0)
 box:send_stimulation(1, 33024, 18, 0)
 box:send_stimulation(1, 33024, 21, 0)
@@ -265,8 +262,9 @@ box:send_stimulation(1, 33043, 364, 0)
 box:send_stimulation(1, 33043, 367, 0)
 box:send_stimulation(1, 33043, 370, 0)
 box:send_stimulation(1, 33043, 373, 0)
-box:send_stimulation(1, 32770, 375, 0)
+
+box:send_stimulation(1, 32770, 375, 0)		-- End paradigm
 box:send_stimulation(1, 32770, 377, 0)	
--- releases cpu
-	box:sleep()
+
+	box:sleep()				-- releases cpu
 end

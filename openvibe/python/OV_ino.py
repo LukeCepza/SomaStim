@@ -1,3 +1,5 @@
+-- NO JALA
+
 import sys; sys.path.append('./pylsl')
 # from pylsl import StreamInlet, resolve_stream, StreamInfo, StreamOutlet
 import serial

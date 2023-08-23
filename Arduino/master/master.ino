@@ -1,30 +1,29 @@
-// LCD
-#include <Wire.h>
-#include "DFRobot_LCD.h"
-DFRobot_LCD lcd(16, 2); //16 characters and 2 lines of show
+// This device is the Master node 
 
-// This device is a TX node aka the master
+// RF module libraries
 #include <SPI.h>
 #include "printf.h"
 #include "RF24.h"
-
-//instance of radio
-RF24 radio(9, 10); // using pin 9 for the CE pin, and pin 10 for the CSN pin
-// Let these addresses be used for the pair
-
-uint8_t address[][6] = {"M2T", "M2A", "M2V"};
+RF24 radio(9, 10);                                // Arduino pin 9 for the CE pin and pin 10 for the CSN pin
+uint8_t address[][6] = {"M2T", "M2A", "M2V"};     // Addresses for the pair of modules (Master to Touch | Master to Air | Master to Vibration)
 byte payload;
 
-void setup() {
-  // LCD
-  lcd.init();
+// LCD libraries
+#include <Wire.h>
+#include "DFRobot_LCD.h"
+DFRobot_LCD lcd(16, 2);     //16 characters and 2 lines of show
 
-  // put your setup code here, to run once:
-  Serial.begin(500000);
+
+void setup() {
+  lcd.init();             // initialize LCD
+
+  Serial.begin(500000);   // baudrate of 500000
+
+  // --- From RF24 library example: GettingStarted --- //
+  // configure RF
   while (!Serial) {
     // some boards need to wait to ensure access to serial over USB
   }
-
   // initialize the transceiver on the SPI bus
   if (!radio.begin()) {
     Serial.println(F("radio hardware is not responding!!"));
@@ -36,23 +35,19 @@ void setup() {
     delay(20);
     while (1) {} // hold in infinite loop
   }
-  // Set the PA Level low to try preventing power supply related problems
-  // because these examples are likely run with nodes in close proximity to
-  // each other.
-  radio.setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
-  // save on transmission time by setting the radio to only transmit the
-  // number of bytes we need to transmit a float
-  radio.setPayloadSize(sizeof(payload)); // float datatype occupies 4 bytes
-  // set the TX address of the RX node into the TX pipe
+  radio.setPALevel(RF24_PA_LOW);          // RF24_PA_MAX is default.
+  radio.setPayloadSize(sizeof(payload));  // float datatype occupies 4 bytes
 }
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
   delay(5);
-  payload = SerialEvent();
-  radio.stopListening();
-  if (payload == 0xFA) {
+  payload = SerialEvent();      // call main function SerialEvent
+  radio.stopListening();        // put radio in TX mode
+
+  // checks if 0xFA label arrived from serial, 
+  // if so, then connection between OpenViBE and Arduino was succesful.
+  if (payload == 0xFA) {  
     payload = 0;
     Serial.print("Hi, its Arduino!");
     lcd.setRGB(0, 250, 0);
@@ -61,22 +56,24 @@ void loop() {
   }
 
   if (payload != 0) {
-    unsigned long start_timer = micros();                    // start the timer
-    bool report = radio.write(&payload, sizeof(byte));       // transmit & save the report
-    unsigned long end_timer = micros();                      // end the timer
+    unsigned long start_timer = micros();               // start the timer
+    bool report = radio.write(&payload, sizeof(byte));  // transmit & save the report
+    unsigned long end_timer = micros();                 // end the timer
 
     if (report) {
-      Serial.print(F("Transmission successful! "));          // payload was delivered
+      // print if reception of label in sub-modules was succesful
+      Serial.print(F("Transmission successful! "));     // payload was delivered
       Serial.print(F("Time to transmit = "));
-      Serial.print(end_timer - start_timer);                 // print the timer result
+      Serial.print(end_timer - start_timer);            // print the timer result
       Serial.print(F(" us. Sent: "));
-      Serial.println( );                               // print payload sent
+      Serial.println( );                                // print payload sent
       delay(5);
       lcd.setRGB(0, 250, 0);
       lcd.setCursor(0, 1);
       lcd.print("   Successful   ");
 
     } else {
+      // print if reception of label in sub- modules failed
       Serial.println(F("Transmission failed or timed out")); // payload was not delivered
       lcd.setRGB(250, 0, 0);
       lcd.setCursor(0, 1);
@@ -86,7 +83,10 @@ void loop() {
 }
 
 byte SerialEvent() {
-  // put your main code here, to run repeatedly:
+  // function SerialEvent received the code/label from serial port (OpenViBE) and
+  // sends them via RadioFrequency communication to the corresponding sub-module
+
+  // Read codes/labels from Serial port
   byte ret = 0x00;
   String Fmar = "";
   while (Serial.available()) {
@@ -94,10 +94,9 @@ byte SerialEvent() {
     Serial.println(markers);
     Fmar += markers;
     Serial.println(Fmar);
-
   }
-  //Caress protocol -TENSE
-  if (Fmar.indexOf("33036") >= 0) {
+  
+  if (Fmar.indexOf("33036") >= 0) {           //Caress protocol -TENSE
     radio.openWritingPipe(address[0]);
     ret = 0x0D;
     lcd.setRGB(0, 0, 100);
@@ -125,8 +124,8 @@ byte SerialEvent() {
     lcd.setCursor(0, 0);
     lcd.print("CARESS TENSE 6N ");
   }
-  //Caress protocol -STIMULI
-  else if (Fmar.indexOf("33024") >= 0) {
+  
+  else if (Fmar.indexOf("33024") >= 0) {      //Caress protocol -STIMULI
     //agregar el valor del canal
     radio.openWritingPipe(address[0]);
     ret = 0x01;
@@ -156,8 +155,7 @@ byte SerialEvent() {
     lcd.print("CARESS 6N 33027 ");
   }
 
-  // Air protocol
-  else if (Fmar.indexOf("33028") >= 0) {
+  else if (Fmar.indexOf("33028") >= 0) {        // Air protocol
     radio.openWritingPipe(address[1]);
     ret = 0x05;
     lcd.setRGB(0, 0, 100);
@@ -185,37 +183,15 @@ byte SerialEvent() {
     lcd.setCursor(0, 0);
     lcd.print("Aire Full  33031");
   }
-  else if (Fmar.indexOf("33065") >= 0) {
-    radio.openWritingPipe(address[1]);
-    ret = 0x14;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("START THRESHOLD "); //AIR
-  }
-  else if (Fmar.indexOf("33062") >= 0) {
-    radio.openWritingPipe(address[1]);
-    ret = 0x15;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print(" THRESHOLD SENT ");//AIR
-  }
   else if (Fmar.indexOf("33043") >= 0) {
     radio.openWritingPipe(address[1]);
     ret = 0x16;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
-    lcd.print("STOP STIMUL 33043");//AIR
-  }
-  else if (Fmar.indexOf("33044") >= 0) {
-    radio.openWritingPipe(address[1]);
-    ret = 0X17;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("VALIDATION 33044");  //AIR
+    lcd.print("STOP STIM 33043 ");//AIR
   }
 
-  //vibration protocol
-  else if (Fmar.indexOf("33032") >= 0) {
+  else if (Fmar.indexOf("33032") >= 0) {        //Vibration protocol
     radio.openWritingPipe(address[2]);
     ret = 0x09;
     lcd.setRGB(0, 0, 100);
@@ -243,44 +219,16 @@ byte SerialEvent() {
     lcd.setCursor(0, 0);
     lcd.print("Vibra  L4  33035");
   }
-  else if (Fmar.indexOf("33064") >= 0) {
-    radio.openWritingPipe(address[2]);
-    ret = 0x11;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("START THRESHOLD ");
-  }
-  else if (Fmar.indexOf("33061") >= 0) {
-    radio.openWritingPipe(address[2]);
-    ret = 0x12;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print(" THRESHOLD SENT ");
-  }
-  else if (Fmar.indexOf("33042") >= 0) {
-    radio.openWritingPipe(address[2]);
-    ret = 0x13;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("STOP STIMUL 33042");
-  }
-  else if (Fmar.indexOf("33041") >= 0) {
-    radio.openWritingPipe(address[2]);
-    ret = 0X18;
-    lcd.setRGB(0, 0, 100);
-    lcd.setCursor(0, 0);
-    lcd.print("VALIDATION 33041");  //VIB
-  }
-  //FINISH EXPERIMENT
-  else if (Fmar.indexOf("32770") >= 0) {
+  
+  else if (Fmar.indexOf("32770") >= 0) {        //FINISH EXPERIMENT
     radio.openWritingPipe(address[2]);
     ret = 0xFF;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
     lcd.print(" EXPERIMENT DONE ");
   }
-  //Serial Connection successfull
-  if (Fmar.indexOf("33083") >= 0) {
+  
+  if (Fmar.indexOf("33083") >= 0) {             //Serial Connection successfull
     ret = 0xFA;
     lcd.setRGB(0, 0, 100);
     lcd.setCursor(0, 0);
